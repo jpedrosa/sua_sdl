@@ -36,6 +36,28 @@ enum SDLError: ErrorType {
 }
 
 
+class TextGridImpl {
+
+  var x = 0
+  var y = 0
+  var fontColor = SDL_Color(r: 0, g: 0, b: 0, a: 255)
+  var backgroundColor: SDL_Color?
+
+  func move(x: Int, y: Int) {
+    self.x = x
+    self.y = y
+  }
+
+  func add(string: String) {
+    var a = Array(string.characters)
+  }
+
+}
+
+
+let TextGrid = TextGridImpl()
+
+
 if SDL_Init(UInt32(SDL_INIT_VIDEO)) < 0 {
   throw SDLError.Init(message: "\(SDL_GetError())")
 }
@@ -70,18 +92,43 @@ if TTF_Init() == -1 {
 
 defer { TTF_Quit() }
 
-let fontPath = "/usr/share/fonts/truetype/freefont/FreeSans.ttf"
-let freeSans = TTF_OpenFont(fontPath, 48)
+let fontPath = "/usr/share/fonts/truetype/freefont/FreeMono.ttf"
+//let fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+//let fontPath = "/usr/share/fonts/truetype/droid/DroidSansMono.ttf"
+//let fontPath = "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf"
+//let fontPath = "/usr/share/fonts/truetype/tlwg/TlwgMono.ttf"
+// let fontPath = "/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-R.ttf"
+let freeSans = TTF_OpenFont(fontPath, 14)
 
 if freeSans == nil {
   throw SDLError.FontLoad
 }
 
+var sizeWidth: Int32 = 0
+var sizeHeight: Int32 = 0
+
+TTF_SizeUNICODE(freeSans, Array("Coração".utf16), &sizeWidth, &sizeHeight)
+
+p("size width \(sizeWidth) height \(sizeHeight)")
+
+p("font height \(TTF_FontHeight(freeSans))")
+
+p("font ascent \(TTF_FontAscent(freeSans)) descent \(TTF_FontDescent(freeSans))")
+
+p("font line skip \(TTF_FontLineSkip(freeSans))")
+
 let fontColor = SDL_Color(r: 0, g: 0, b: 255, a: 255)
 
+let shadowColor = SDL_Color(r: 0, g: 0, b: 0, a: 255)
+
 // Blended version does anti-aliasing, finally!
-let surfaceMsg = TTF_RenderText_Blended(freeSans, "Hello World!", fontColor)
+//let surfaceMsg = TTF_RenderText_Blended(freeSans, "Hello World!", fontColor)
+let surfaceMsg = TTF_RenderUTF8_Blended(freeSans, "Hello ção World!", fontColor)
+// let surfaceMsg = TTF_RenderText_Shaded(freeSans, "Hello ção World!", fontColor,
+//     shadowColor)
 //let surfaceMsg = TTF_RenderText_Solid(freeSans, "Hello World!", fontColor)
+
+// SDL_SaveBMP_RW(surfaceMsg, SDL_RWFromFile("/home/dewd/t_/hello_sdl.bmp", "wb"), 1)
 
 let msg = SDL_CreateTextureFromSurface(rend, surfaceMsg)
 
@@ -116,8 +163,11 @@ while !done {
   SDL_SetRenderDrawColor(rend, 255, 255, 255, 255)
   SDL_RenderClear(rend)
   let msgResult = SDL_RenderCopy(rend, msg, nil, &msgRect)
+  //msg.render(200, 200)
 //  gTextTexture.render( ( SCREEN_WIDTH - gTextTexture.getWidth() ) / 2, ( SCREEN_HEIGHT - gTextTexture.getHeight() ) / 2 );
   SDL_RenderPresent(rend)
+  SDL_Delay(100)
+//   SDL_Delay(16)
 }
 
 // while true {
