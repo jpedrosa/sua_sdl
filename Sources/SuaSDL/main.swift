@@ -36,12 +36,22 @@ enum SDLError: ErrorType {
 }
 
 
-class TextGridImpl {
+class TextGrid {
 
   var x = 0
   var y = 0
-  var fontColor = SDL_Color(r: 0, g: 0, b: 0, a: 255)
+  var fontColor = SDL_Color(r: 0, g: 0, b: 255, a: 255)
   var backgroundColor: SDL_Color?
+  var font: COpaquePointer
+  var cellWidth: Int32 = 0
+  var cellHeight: Int32 = 0
+  var renderer: COpaquePointer
+
+  init(renderer: COpaquePointer, font: COpaquePointer) {
+    self.renderer = renderer
+    self.font = font
+    TTF_SizeText(font, "W", &cellWidth, &cellHeight)
+  }
 
   func move(x: Int, y: Int) {
     self.x = x
@@ -49,13 +59,18 @@ class TextGridImpl {
   }
 
   func add(string: String) {
-    var a = Array(string.characters)
+    let ny = Int32(y) * cellHeight
+    let surface = TTF_RenderUTF8_Blended(font, string, fontColor)
+    defer { SDL_FreeSurface(surface) }
+    let texture = SDL_CreateTextureFromSurface(renderer, surface)
+    defer { SDL_DestroyTexture(texture) }
+    var textureRect = SDL_Rect(x: Int32(x) * cellWidth, y: ny,
+        w: surface.memory.w, h: surface.memory.h)
+    SDL_RenderCopy(renderer, texture, nil, &textureRect)
+    x += string.characters.count
   }
 
 }
-
-
-let TextGrid = TextGridImpl()
 
 
 if SDL_Init(UInt32(SDL_INIT_VIDEO)) < 0 {
@@ -92,17 +107,19 @@ if TTF_Init() == -1 {
 
 defer { TTF_Quit() }
 
-let fontPath = "/usr/share/fonts/truetype/freefont/FreeMono.ttf"
-//let fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+// let fontPath = "/usr/share/fonts/truetype/freefont/FreeMono.ttf"
+let fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
 //let fontPath = "/usr/share/fonts/truetype/droid/DroidSansMono.ttf"
 //let fontPath = "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf"
 //let fontPath = "/usr/share/fonts/truetype/tlwg/TlwgMono.ttf"
 // let fontPath = "/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-R.ttf"
-let freeSans = TTF_OpenFont(fontPath, 14)
+let freeSans = TTF_OpenFont(fontPath, 12)
 
 if freeSans == nil {
   throw SDLError.FontLoad
 }
+
+let textGrid = TextGrid(renderer: rend, font: freeSans)
 
 var sizeWidth: Int32 = 0
 var sizeHeight: Int32 = 0
@@ -139,15 +156,25 @@ let textHeight = surfaceMsg.memory.h
 
 var msgRect = SDL_Rect(x: 10, y: 10, w: textWidth, h: textHeight)
 
-let msgResult = SDL_RenderCopy(rend, msg, nil, &msgRect)
+// let msgResult = SDL_RenderCopy(rend, msg, nil, &msgRect)
 
 //SDL_DestroyTexture(msg)
 
-p("msgResult \(msgResult)")
+// p("msgResult \(msgResult)")
 
 p("surfaceMsg \(surfaceMsg)")
 
 p("font \(freeSans)")
+
+func drawAgain() {
+  textGrid.move(1, y: 10)
+  textGrid.add("Leo")
+  textGrid.add("nardo")
+  textGrid.move(1, y: 11)
+  textGrid.add("surfaceMsg 0x0000000001971750")
+  textGrid.move(1, y: 12)
+  textGrid.add("Coração do João")
+}
 
 var ev = SDL_Event()
 var done = false
@@ -163,8 +190,7 @@ while !done {
   SDL_SetRenderDrawColor(rend, 255, 255, 255, 255)
   SDL_RenderClear(rend)
   let msgResult = SDL_RenderCopy(rend, msg, nil, &msgRect)
-  //msg.render(200, 200)
-//  gTextTexture.render( ( SCREEN_WIDTH - gTextTexture.getWidth() ) / 2, ( SCREEN_HEIGHT - gTextTexture.getHeight() ) / 2 );
+  drawAgain()
   SDL_RenderPresent(rend)
   SDL_Delay(100)
 //   SDL_Delay(16)
