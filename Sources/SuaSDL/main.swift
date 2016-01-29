@@ -40,12 +40,12 @@ class TextGrid {
 
   var x = 0
   var y = 0
-  var fontColor = SDL_Color(r: 0, g: 0, b: 255, a: 255)
-  var backgroundColor: SDL_Color?
+  var fontColor = SDL_Color(r: 0, g: 0, b: 0, a: 255)
   var font: COpaquePointer
   var cellWidth: Int32 = 0
   var cellHeight: Int32 = 0
   var renderer: COpaquePointer
+  let backgroundColor = SDL_Color(r: 255, g: 255, b: 255, a: 255)
 
   init(renderer: COpaquePointer, font: COpaquePointer) {
     self.renderer = renderer
@@ -60,6 +60,8 @@ class TextGrid {
 
   func add(string: String) {
     let ny = Int32(y) * cellHeight
+    // let surface = TTF_RenderUTF8_Shaded(font, string, fontColor,
+    //     backgroundColor)
     let surface = TTF_RenderUTF8_Blended(font, string, fontColor)
     defer { SDL_FreeSurface(surface) }
     let texture = SDL_CreateTextureFromSurface(renderer, surface)
@@ -118,6 +120,11 @@ let freeSans = TTF_OpenFont(fontPath, 12)
 if freeSans == nil {
   throw SDLError.FontLoad
 }
+
+// TTF_SetFontHinting(freeSans, TTF_HINTING_LIGHT)
+// TTF_SetFontHinting(freeSans, TTF_HINTING_MONO)
+//TTF_SetFontHinting(freeSans, TTF_HINTING_NORMAL)
+TTF_SetFontHinting(freeSans, TTF_HINTING_NONE)
 
 let textGrid = TextGrid(renderer: rend, font: freeSans)
 
