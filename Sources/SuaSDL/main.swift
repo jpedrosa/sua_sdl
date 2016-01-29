@@ -50,7 +50,15 @@ class TextGrid {
   init(renderer: COpaquePointer, font: COpaquePointer) {
     self.renderer = renderer
     self.font = font
-    TTF_SizeText(font, "W", &cellWidth, &cellHeight)
+    cellHeight = TTF_FontHeight(font)
+//    TTF_SizeText(font, "W", &cellWidth, &cellHeight)
+  //  p("cellWidth \(cellWidth)")
+//    var minx: Int32 = 0
+  //  var maxx: Int32 = 0
+    //var advance: Int32 = 0
+//    TTF_GlyphMetrics(font, 65, &minx, &maxx, nil, nil, &cellWidth)
+    TTF_GlyphMetrics(font, 65, nil, nil, nil, nil, &cellWidth)
+    //p("minx \(minx), maxx \(maxx), advance \(advance)")
   }
 
   func move(x: Int, y: Int) {
@@ -121,10 +129,12 @@ if freeSans == nil {
   throw SDLError.FontLoad
 }
 
-// TTF_SetFontHinting(freeSans, TTF_HINTING_LIGHT)
+// TTF_SetFontHinting(freeSans, TTF_HINTING_NONE)
 // TTF_SetFontHinting(freeSans, TTF_HINTING_MONO)
-//TTF_SetFontHinting(freeSans, TTF_HINTING_NORMAL)
-TTF_SetFontHinting(freeSans, TTF_HINTING_NONE)
+TTF_SetFontHinting(freeSans, TTF_HINTING_LIGHT)
+// TTF_SetFontHinting(freeSans, TTF_HINTING_NORMAL)
+
+TTF_SetFontStyle(freeSans, TTF_STYLE_BOLD)
 
 let textGrid = TextGrid(renderer: rend, font: freeSans)
 
@@ -177,10 +187,18 @@ func drawAgain() {
   textGrid.move(1, y: 10)
   textGrid.add("Leo")
   textGrid.add("nardo")
+  textGrid.add("Voador")
   textGrid.move(1, y: 11)
   textGrid.add("surfaceMsg 0x0000000001971750")
   textGrid.move(1, y: 12)
   textGrid.add("Coração do João")
+  textGrid.move(1, y: 13)
+  textGrid.add("A")
+  textGrid.add("b")
+  textGrid.add("C")
+  textGrid.add("d")
+  textGrid.add("E")
+  textGrid.add("f")
 }
 
 var ev = SDL_Event()
