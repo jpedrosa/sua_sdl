@@ -21,9 +21,20 @@ public class SDLImpl {
   public let WINDOWEVENT: UInt32  = 512
   public let TEXTINPUT: UInt32    = 771
 
-  public let WINDOWEVENT_CLOSE: UInt8 = 214
+  public let WINDOWEVENT_SHOWN: UInt8        = 1
+  public let WINDOWEVENT_HIDDEN: UInt8       = 2
+  public let WINDOWEVENT_EXPOSED: UInt8      = 3
+  public let WINDOWEVENT_MOVED: UInt8        = 4
+  public let WINDOWEVENT_RESIZED: UInt8      = 5
+  public let WINDOWEVENT_SIZE_CHANGED: UInt8 = 6
+  public let WINDOWEVENT_MINIMIZED: UInt8    = 7
+  public let WINDOWEVENT_MAXIMIZED: UInt8    = 8
+  public let WINDOWEVENT_RESTORED: UInt8     = 9
+  public let WINDOWEVENT_ENTER: UInt8        = 10
+  public let WINDOWEVENT_LEAVE: UInt8        = 11
   public let WINDOWEVENT_FOCUS_GAINED: UInt8 = 12
-  public let WINDOWEVENT_FOCUS_LOST: UInt8 = 13
+  public let WINDOWEVENT_FOCUS_LOST: UInt8   = 13
+  public let WINDOWEVENT_CLOSE: UInt8        = 14
 
   public let WINDOW_RESIZABLE: UInt32 = 32
 
@@ -127,11 +138,11 @@ public class SDLImpl {
     while !done {
       while SDL_PollEvent(&ev) != 0 {
         invalidated = true
-        if ev.type == SDL.WINDOWEVENT {
-          p("window event \(ev.window.event)")
-        } else if ev.type == SDL.TEXTINPUT {
+        if ev.type == WINDOWEVENT {
+//          p("window event \(ev.window.event)")
+        } else if ev.type == TEXTINPUT {
           p("text input \(ev.text)")
-        } else if ev.type == SDL.QUIT {
+        } else if ev.type == QUIT {
           done = true
         }
       }
