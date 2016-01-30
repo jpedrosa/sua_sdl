@@ -135,10 +135,35 @@ public class SDLImpl {
     var lastWidth: Int32 = -1
     var lastHeight: Int32 = -1
 
+    func doDraw() {
+      SDL_SetRenderDrawColor(rend, 255, 255, 255, 255)
+      SDL_RenderClear(rend)
+      drawAgain()
+      SDL_RenderPresent(rend)
+      invalidated = false
+    }
+
+    func checkSizeChange() {
+      var w: Int32 = 0
+      var h: Int32 = 0
+      SDL_GetWindowSize(win, &w, &h)
+      if w != lastWidth || h != lastHeight {
+        lastWidth = w
+        lastHeight = h
+        textGrid.changeScreenSize(w, height: h)
+        doDraw()
+      }
+    }
+
+    checkSizeChange()
+
     while !done {
       while SDL_PollEvent(&ev) != 0 {
         invalidated = true
         if ev.type == WINDOWEVENT {
+          if ev.window.event == WINDOWEVENT_SIZE_CHANGED {
+            checkSizeChange()
+          }
 //          p("window event \(ev.window.event)")
         } else if ev.type == TEXTINPUT {
           p("text input \(ev.text)")
@@ -147,19 +172,7 @@ public class SDLImpl {
         }
       }
       if invalidated {
-        var w: Int32 = 0
-        var h: Int32 = 0
-        SDL_GetWindowSize(win, &w, &h)
-        if w != lastWidth || h != lastHeight {
-          lastWidth = w
-          lastHeight = h
-          textGrid.changeScreenSize(w, height: h)
-        }
-        SDL_SetRenderDrawColor(rend, 255, 255, 255, 255)
-        SDL_RenderClear(rend)
-        drawAgain()
-        SDL_RenderPresent(rend)
-        invalidated = false
+        doDraw()
       }
       SDL_Delay(100)
     //   SDL_Delay(16)
