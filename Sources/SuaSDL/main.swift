@@ -46,8 +46,8 @@ class TextGrid {
   var cellHeight: Int32 = 0
   var renderer: COpaquePointer
   var backgroundColor: SDL_Color? = nil
-  let offsetLeft: Int32 = 1
-  let offsetTop: Int32 = 1
+  let padding: Int32 = 1
+  let doublePadding: Int32 = 2
   var width = 0             // Max number of horizontal cells.
   var height = 0            // Max number of vertical cells.
 
@@ -78,15 +78,15 @@ class TextGrid {
     defer { SDL_FreeSurface(surface) }
     let texture = SDL_CreateTextureFromSurface(renderer, surface)
     defer { SDL_DestroyTexture(texture) }
-    var textureRect = SDL_Rect(x: offsetLeft + (Int32(x) * cellWidth),
-        y: offsetTop + ny, w: surface.memory.w, h: surface.memory.h)
+    var textureRect = SDL_Rect(x: padding + (Int32(x) * cellWidth),
+        y: padding + ny, w: surface.memory.w, h: surface.memory.h)
     SDL_RenderCopy(renderer, texture, nil, &textureRect)
     x += string.characters.count
   }
 
   func changeScreenSize(width: Int32, height: Int32) {
-    self.width = Int((width - offsetLeft) / cellWidth)
-    self.height = Int((height - offsetTop) / cellHeight)
+    self.width = Int((width - doublePadding) / cellWidth)
+    self.height = Int((height - doublePadding) / cellHeight)
   }
 
 }
