@@ -5,4 +5,4 @@ import CSDL
 import _Sua
 
 
-try SDL.start()
+try S.start()
