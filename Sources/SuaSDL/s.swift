@@ -52,7 +52,15 @@ public class SImpl {
     return _textGrid!
   }
 
-  public func start() throws {
+  public var mainDiv = Div()
+
+  public func start(fn: (inout div: Div) throws -> Void) throws {
+    try doStart() {
+      try fn(div: &self.mainDiv)
+    }
+  }
+
+  public func doStart(fn: () throws -> Void) throws {
 
     if SDL_Init(UInt32(SDL_INIT_VIDEO)) < 0 {
       throw SError.Init(message: errorMessage)
@@ -104,39 +112,39 @@ public class SImpl {
     let yellowColor = SDL_Color(r: 255, g: 255, b: 0, a: 255)
     let blueColor = SDL_Color(r: 0, g: 0, b: 255, a: 255)
 
-    func drawAgain() {
-      textGrid.move(10, y: 1)
-      textGrid.fontColor = blueColor
-      textGrid.add("Hello SuaSDL!")
-      textGrid.fontColor = blackColor
-      textGrid.move(1, y: 10)
-      textGrid.add("Leo")
-      textGrid.add("nardo")
-      textGrid.add("Voador")
-      textGrid.move(1, y: 11)
-      textGrid.add("surfaceMsg 0x0000000001971750")
-      textGrid.move(1, y: 12)
-      textGrid.add("Coração do João")
-      textGrid.move(1, y: 13)
-      textGrid.add("A")
-      textGrid.add("b")
-      textGrid.add("C")
-      textGrid.add("d")
-      textGrid.add("E")
-      textGrid.add("f")
-      textGrid.move(0, y: 14)
-      textGrid.add("Gabriel")
-      textGrid.move(1, y: 20)
-      textGrid.fontColor = redColor
-      textGrid.backgroundColor = yellowColor
-      textGrid.add("╭───────────────────────────────────────────╮")
-      textGrid.move(1, y: 21)
-      textGrid.add("│                                           │")
-      textGrid.move(1, y: 22)
-      textGrid.add("╰───────────────────────────────────────────╯")
-      textGrid.fontColor = blackColor
-      textGrid.backgroundColor = nil
-    }
+    // func drawAgain() {
+    //   textGrid.move(10, y: 1)
+    //   textGrid.fontColor = blueColor
+    //   textGrid.add("Hello SuaSDL!")
+    //   textGrid.fontColor = blackColor
+    //   textGrid.move(1, y: 10)
+    //   textGrid.add("Leo")
+    //   textGrid.add("nardo")
+    //   textGrid.add("Voador")
+    //   textGrid.move(1, y: 11)
+    //   textGrid.add("surfaceMsg 0x0000000001971750")
+    //   textGrid.move(1, y: 12)
+    //   textGrid.add("Coração do João")
+    //   textGrid.move(1, y: 13)
+    //   textGrid.add("A")
+    //   textGrid.add("b")
+    //   textGrid.add("C")
+    //   textGrid.add("d")
+    //   textGrid.add("E")
+    //   textGrid.add("f")
+    //   textGrid.move(0, y: 14)
+    //   textGrid.add("Gabriel")
+    //   textGrid.move(1, y: 20)
+    //   textGrid.fontColor = redColor
+    //   textGrid.backgroundColor = yellowColor
+    //   textGrid.add("╭───────────────────────────────────────────╮")
+    //   textGrid.move(1, y: 21)
+    //   textGrid.add("│                                           │")
+    //   textGrid.move(1, y: 22)
+    //   textGrid.add("╰───────────────────────────────────────────╯")
+    //   textGrid.fontColor = blackColor
+    //   textGrid.backgroundColor = nil
+    // }
 
     var ev = SDL_Event()
     var done = false
@@ -147,7 +155,8 @@ public class SImpl {
     func doDraw() {
       SDL_SetRenderDrawColor(rend, 255, 255, 255, 255)
       SDL_RenderClear(rend)
-      drawAgain()
+      mainDiv.mainDraw(0, y: 0, width: textGrid.width, height: textGrid.height)
+      // drawAgain()
       SDL_RenderPresent(rend)
       invalidated = false
     }
@@ -165,6 +174,11 @@ public class SImpl {
     }
 
     checkSizeChange()
+
+    mainDiv.expandWidth = true
+    mainDiv.expandHeight = true
+
+    try fn()
 
     while !done {
       while SDL_PollEvent(&ev) != 0 {
