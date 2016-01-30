@@ -46,6 +46,10 @@ class TextGrid {
   var cellHeight: Int32 = 0
   var renderer: COpaquePointer
   var backgroundColor: SDL_Color? = nil
+  let offsetLeft: Int32 = 1
+  let offsetTop: Int32 = 1
+  var width = 0             // Max number of horizontal cells.
+  var height = 0            // Max number of vertical cells.
 
   init(renderer: COpaquePointer, font: COpaquePointer) {
     self.renderer = renderer
@@ -74,10 +78,15 @@ class TextGrid {
     defer { SDL_FreeSurface(surface) }
     let texture = SDL_CreateTextureFromSurface(renderer, surface)
     defer { SDL_DestroyTexture(texture) }
-    var textureRect = SDL_Rect(x: Int32(x) * cellWidth, y: ny,
-        w: surface.memory.w, h: surface.memory.h)
+    var textureRect = SDL_Rect(x: offsetLeft + (Int32(x) * cellWidth),
+        y: offsetTop + ny, w: surface.memory.w, h: surface.memory.h)
     SDL_RenderCopy(renderer, texture, nil, &textureRect)
     x += string.characters.count
+  }
+
+  func changeScreenSize(width: Int32, height: Int32) {
+    self.width = Int((width - offsetLeft) / cellWidth)
+    self.height = Int((height - offsetTop) / cellHeight)
   }
 
 }
@@ -220,11 +229,13 @@ func drawAgain() {
 var ev = SDL_Event()
 var done = false
 var invalidated = false
+var lastWidth: Int32 = -1
+var lastHeight: Int32 = -1
 
 while !done {
   while SDL_PollEvent(&ev) != 0 {
     invalidated = true
-    p("event \(ev.type)")
+    //p("event \(ev.type)")
     if ev.type == SDL.TEXTINPUT {
       p("text input \(ev.text)")
     } else if ev.type == SDL.QUIT {
@@ -232,6 +243,14 @@ while !done {
     }
   }
   if invalidated {
+    var w: Int32 = 0
+    var h: Int32 = 0
+    SDL_GetWindowSize(win, &w, &h)
+    if w != lastWidth || h != lastHeight {
+      lastWidth = w
+      lastHeight = h
+      textGrid.changeScreenSize(w, height: h)
+    }
     SDL_SetRenderDrawColor(rend, 255, 255, 255, 255)
     SDL_RenderClear(rend)
     let msgResult = SDL_RenderCopy(rend, msg, nil, &msgRect)
@@ -242,20 +261,5 @@ while !done {
   SDL_Delay(100)
 //   SDL_Delay(16)
 }
-
-// while true {
-//   SDL_WaitEvent(&ev)
-//   p("ev \(ev.type)")
-//   if ev.type == SDL.WINDOWEVENT {
-//     p("window even \(ev.window.event)")
-//   } else if ev.type == SDL.QUIT {
-//     p("sql wants out")
-//     break
-//   }
-//   if ev.type == SDL.WINDOWEVENT && ev.window.event == SDL.WINDOWEVENT_CLOSE {
-//     p("out of window we go")
-//     break
-//   }
-// }
 
 p("about to quit")
