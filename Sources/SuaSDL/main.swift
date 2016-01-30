@@ -55,14 +55,7 @@ class TextGrid {
     self.renderer = renderer
     self.font = font
     cellHeight = TTF_FontHeight(font)
-//    TTF_SizeText(font, "W", &cellWidth, &cellHeight)
-  //  p("cellWidth \(cellWidth)")
-//    var minx: Int32 = 0
-  //  var maxx: Int32 = 0
-    //var advance: Int32 = 0
-//    TTF_GlyphMetrics(font, 65, &minx, &maxx, nil, nil, &cellWidth)
     TTF_GlyphMetrics(font, 65, nil, nil, nil, nil, &cellWidth)
-    //p("minx \(minx), maxx \(maxx), advance \(advance)")
   }
 
   func move(x: Int, y: Int) {
@@ -114,24 +107,14 @@ if rend == nil {
   throw SDLError.CreateRenderer
 }
 
-// SDL_SetRenderDrawColor(rend, 255, 255, 255, 255)
-// SDL_RenderClear(rend)
-// SDL_RenderPresent(rend)
-
-p("Hello SDL!")
-
 if TTF_Init() == -1 {
   throw SDLError.FontInit
 }
 
 defer { TTF_Quit() }
 
-// let fontPath = "/usr/share/fonts/truetype/freefont/FreeMono.ttf"
 let fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
-//let fontPath = "/usr/share/fonts/truetype/droid/DroidSansMono.ttf"
-//let fontPath = "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf"
-//let fontPath = "/usr/share/fonts/truetype/tlwg/TlwgMono.ttf"
-// let fontPath = "/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-R.ttf"
+
 let freeSans = TTF_OpenFont(fontPath, 12)
 
 if freeSans == nil {
@@ -147,56 +130,16 @@ TTF_SetFontHinting(freeSans, TTF_HINTING_LIGHT)
 
 let textGrid = TextGrid(renderer: rend, font: freeSans)
 
-var sizeWidth: Int32 = 0
-var sizeHeight: Int32 = 0
-
-TTF_SizeUNICODE(freeSans, Array("Coração".utf16), &sizeWidth, &sizeHeight)
-
-p("size width \(sizeWidth) height \(sizeHeight)")
-
-p("font height \(TTF_FontHeight(freeSans))")
-
-p("font ascent \(TTF_FontAscent(freeSans)) descent \(TTF_FontDescent(freeSans))")
-
-p("font line skip \(TTF_FontLineSkip(freeSans))")
-
-let fontColor = SDL_Color(r: 0, g: 0, b: 255, a: 255)
-
-let shadowColor = SDL_Color(r: 0, g: 0, b: 0, a: 255)
-
-// Blended version does anti-aliasing, finally!
-//let surfaceMsg = TTF_RenderText_Blended(freeSans, "Hello World!", fontColor)
-let surfaceMsg = TTF_RenderUTF8_Blended(freeSans, "Hello ção World!", fontColor)
-// let surfaceMsg = TTF_RenderText_Shaded(freeSans, "Hello ção World!", fontColor,
-//     shadowColor)
-//let surfaceMsg = TTF_RenderText_Solid(freeSans, "Hello World!", fontColor)
-
-// SDL_SaveBMP_RW(surfaceMsg, SDL_RWFromFile("/home/dewd/t_/hello_sdl.bmp", "wb"), 1)
-
-let msg = SDL_CreateTextureFromSurface(rend, surfaceMsg)
-
-SDL_FreeSurface(surfaceMsg)
-
-let textWidth = surfaceMsg.memory.w
-let textHeight = surfaceMsg.memory.h
-
-var msgRect = SDL_Rect(x: 10, y: 10, w: textWidth, h: textHeight)
-
-// let msgResult = SDL_RenderCopy(rend, msg, nil, &msgRect)
-
-//SDL_DestroyTexture(msg)
-
-// p("msgResult \(msgResult)")
-
-p("surfaceMsg \(surfaceMsg)")
-
-p("font \(freeSans)")
-
 let redColor = SDL_Color(r: 255, g: 0, b: 0, a: 255)
 let blackColor = SDL_Color(r: 0, g: 0, b: 0, a: 255)
 let yellowColor = SDL_Color(r: 255, g: 255, b: 0, a: 255)
+let blueColor = SDL_Color(r: 0, g: 0, b: 255, a: 255)
 
 func drawAgain() {
+  textGrid.move(10, y: 1)
+  textGrid.fontColor = blueColor
+  textGrid.add("Hello SuaSDL!")
+  textGrid.fontColor = blackColor
   textGrid.move(1, y: 10)
   textGrid.add("Leo")
   textGrid.add("nardo")
@@ -235,7 +178,6 @@ var lastHeight: Int32 = -1
 while !done {
   while SDL_PollEvent(&ev) != 0 {
     invalidated = true
-    //p("event \(ev.type)")
     if ev.type == SDL.TEXTINPUT {
       p("text input \(ev.text)")
     } else if ev.type == SDL.QUIT {
@@ -253,7 +195,6 @@ while !done {
     }
     SDL_SetRenderDrawColor(rend, 255, 255, 255, 255)
     SDL_RenderClear(rend)
-    let msgResult = SDL_RenderCopy(rend, msg, nil, &msgRect)
     drawAgain()
     SDL_RenderPresent(rend)
     invalidated = false
@@ -261,5 +202,3 @@ while !done {
   SDL_Delay(100)
 //   SDL_Delay(16)
 }
-
-p("about to quit")
