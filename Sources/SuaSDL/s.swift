@@ -197,8 +197,8 @@ public class SImpl {
       if invalidated {
         doDraw()
       }
-      SDL_Delay(100)
-    //   SDL_Delay(16)
+      // SDL_Delay(100)
+      SDL_Delay(16)
     }
   }
 
