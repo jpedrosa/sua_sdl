@@ -5,35 +5,35 @@ import CSDL
 import _Sua
 
 
-enum SDLError: ErrorType {
+public enum SDLError: ErrorType {
   case Init(message: String)
-  case CreateWindow
-  case CreateRenderer
-  case FontInit
-  case FontLoad
+  case CreateWindow(message: String)
+  case CreateRenderer(message: String)
+  case FontInit(message: String)
+  case FontLoad(message: String)
 }
 
 
-class SDLImpl {
+public class SDLImpl {
 
-  let WINDOW_SHOWN: UInt32 = 4
-  let QUIT: UInt32         = 256
-  let WINDOWEVENT: UInt32  = 512
-  let TEXTINPUT: UInt32    = 771
+  public let WINDOW_SHOWN: UInt32 = 4
+  public let QUIT: UInt32         = 256
+  public let WINDOWEVENT: UInt32  = 512
+  public let TEXTINPUT: UInt32    = 771
 
-  let WINDOWEVENT_CLOSE: UInt8 = 214
+  public let WINDOWEVENT_CLOSE: UInt8 = 214
 
-  let WINDOW_RESIZABLE: UInt32 = 32
+  public let WINDOW_RESIZABLE: UInt32 = 32
 
-  let KEY_DOWN: UInt16 = 768
-  let KEY_UP: UInt16   = 769
+  public let KEY_DOWN: UInt16 = 768
+  public let KEY_UP: UInt16   = 769
 
-  let RENDERER_ACCELERATED: UInt32 = 2
+  public let RENDERER_ACCELERATED: UInt32 = 2
 
-  func start() throws {
+  public func start() throws {
 
     if SDL_Init(UInt32(SDL_INIT_VIDEO)) < 0 {
-      throw SDLError.Init(message: "\(SDL_GetError())")
+      throw SDLError.Init(message: errorMessage)
     }
 
     defer { SDL_Quit() }
@@ -42,7 +42,7 @@ class SDLImpl {
         SDL.WINDOW_SHOWN | SDL.WINDOW_RESIZABLE)
 
     if win == nil {
-      throw SDLError.CreateWindow
+      throw SDLError.CreateWindow(message: errorMessage)
     }
 
     defer { SDL_DestroyWindow(win) }
@@ -51,11 +51,11 @@ class SDLImpl {
     // let rend = SDL_CreateRenderer(win, -1, 0)
 
     if rend == nil {
-      throw SDLError.CreateRenderer
+      throw SDLError.CreateRenderer(message: errorMessage)
     }
 
     if TTF_Init() == -1 {
-      throw SDLError.FontInit
+      throw SDLError.FontInit(message: errorMessage)
     }
 
     defer { TTF_Quit() }
@@ -65,7 +65,7 @@ class SDLImpl {
     let freeSans = TTF_OpenFont(fontPath, 12)
 
     if freeSans == nil {
-      throw SDLError.FontLoad
+      throw SDLError.FontLoad(message: errorMessage)
     }
 
     // TTF_SetFontHinting(freeSans, TTF_HINTING_NONE)
@@ -151,40 +151,48 @@ class SDLImpl {
     }
   }
 
+  public var errorMessage: String {
+    if let s = String.fromCString(SDL_GetError()) {
+      return s
+    } else {
+      return "Meta error: Failed conversion to unicode."
+    }
+  }
+
 }
 
 
-let SDL = SDLImpl()
+public let SDL = SDLImpl()
 
 
-class TextGrid {
+public class TextGrid {
 
-  var x = 0
-  var y = 0
-  var fontColor = SDL_Color(r: 0, g: 0, b: 0, a: 255)
-  var font: COpaquePointer
-  var cellWidth: Int32 = 0
-  var cellHeight: Int32 = 0
-  var renderer: COpaquePointer
-  var backgroundColor: SDL_Color? = nil
-  let padding: Int32 = 1
-  let doublePadding: Int32 = 2
-  var width = 0             // Max number of horizontal cells.
-  var height = 0            // Max number of vertical cells.
+  public var x = 0
+  public var y = 0
+  public var fontColor = SDL_Color(r: 0, g: 0, b: 0, a: 255)
+  public var font: COpaquePointer
+  public var cellWidth: Int32 = 0
+  public var cellHeight: Int32 = 0
+  public var renderer: COpaquePointer
+  public var backgroundColor: SDL_Color? = nil
+  public let padding: Int32 = 1
+  public let doublePadding: Int32 = 2
+  public var width = 0             // Max number of horizontal cells.
+  public var height = 0            // Max number of vertical cells.
 
-  init(renderer: COpaquePointer, font: COpaquePointer) {
+  public init(renderer: COpaquePointer, font: COpaquePointer) {
     self.renderer = renderer
     self.font = font
     cellHeight = TTF_FontHeight(font)
     TTF_GlyphMetrics(font, 65, nil, nil, nil, nil, &cellWidth)
   }
 
-  func move(x: Int, y: Int) {
+  public func move(x: Int, y: Int) {
     self.x = x
     self.y = y
   }
 
-  func add(string: String) {
+  public func add(string: String) {
     let ny = Int32(y) * cellHeight
     let surface = backgroundColor != nil ?
         TTF_RenderUTF8_Shaded(font, string, fontColor, backgroundColor!) :
@@ -198,7 +206,7 @@ class TextGrid {
     x += string.characters.count
   }
 
-  func changeScreenSize(width: Int32, height: Int32) {
+  public func changeScreenSize(width: Int32, height: Int32) {
     self.width = Int((width - doublePadding) / cellWidth)
     self.height = Int((height - doublePadding) / cellHeight)
   }
