@@ -45,7 +45,7 @@ class TextGrid {
   var cellWidth: Int32 = 0
   var cellHeight: Int32 = 0
   var renderer: COpaquePointer
-  let backgroundColor = SDL_Color(r: 255, g: 255, b: 255, a: 255)
+  var backgroundColor: SDL_Color? = nil
 
   init(renderer: COpaquePointer, font: COpaquePointer) {
     self.renderer = renderer
@@ -68,9 +68,9 @@ class TextGrid {
 
   func add(string: String) {
     let ny = Int32(y) * cellHeight
-    // let surface = TTF_RenderUTF8_Shaded(font, string, fontColor,
-    //     backgroundColor)
-    let surface = TTF_RenderUTF8_Blended(font, string, fontColor)
+    let surface = backgroundColor != nil ?
+        TTF_RenderUTF8_Shaded(font, string, fontColor, backgroundColor!) :
+        TTF_RenderUTF8_Blended(font, string, fontColor)
     defer { SDL_FreeSurface(surface) }
     let texture = SDL_CreateTextureFromSurface(renderer, surface)
     defer { SDL_DestroyTexture(texture) }
@@ -183,6 +183,10 @@ p("surfaceMsg \(surfaceMsg)")
 
 p("font \(freeSans)")
 
+let redColor = SDL_Color(r: 255, g: 0, b: 0, a: 255)
+let blackColor = SDL_Color(r: 0, g: 0, b: 0, a: 255)
+let yellowColor = SDL_Color(r: 255, g: 255, b: 0, a: 255)
+
 func drawAgain() {
   textGrid.move(1, y: 10)
   textGrid.add("Leo")
@@ -201,6 +205,16 @@ func drawAgain() {
   textGrid.add("f")
   textGrid.move(0, y: 14)
   textGrid.add("Gabriel")
+  textGrid.move(1, y: 20)
+  textGrid.fontColor = redColor
+  textGrid.backgroundColor = yellowColor
+  textGrid.add("╭───────────────────────────────────────────╮")
+  textGrid.move(1, y: 21)
+  textGrid.add("│                                           │")
+  textGrid.move(1, y: 22)
+  textGrid.add("╰───────────────────────────────────────────╯")
+  textGrid.fontColor = blackColor
+  textGrid.backgroundColor = nil
 }
 
 var ev = SDL_Event()
