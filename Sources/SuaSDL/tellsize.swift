@@ -7,16 +7,16 @@ public enum SType {
 }
 
 
-public enum SBorderType {
+public enum BorderType {
   case LightCurved
 }
 
 
-public struct SPoint {
+public struct Point {
   public var x: Int
   public var y: Int
 
-  static let far = SPoint(x: -10000, y: 0)
+  static let far = Point(x: -10000, y: 0)
 }
 
 
@@ -35,7 +35,7 @@ public struct TellSize {
   public var childrenHeight = 0
   public var childHeightExpander = 0
   public var childExpandMaxHeight = 0
-  public var element: SElement?
+  public var element: Element?
   public var children: [TellSize]?
 
   public var count = 0                 // Useful to record NCText's char count.

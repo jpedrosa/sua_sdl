@@ -1,6 +1,6 @@
 
 
-public struct SText: SElement {
+public struct Text: Element {
   public var type = SType.Text
   public var text = ""
 
@@ -12,12 +12,12 @@ public struct SText: SElement {
   public var borderRight = false
   public var borderBottom = false
   public var borderLeft = false
-  public var borderType = SBorderType.LightCurved
+  public var borderType = BorderType.LightCurved
   public var expandWidth = false
   public var expandHeight = false
   public var expandParentWidth = false
   public var expandParentHeight = false
-  public var align = STextAlign.Left
+  public var align = TextAlign.Left
   public var backgroundStrings = [" "]
 
   public init() { }

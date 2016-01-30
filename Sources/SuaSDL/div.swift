@@ -1,8 +1,8 @@
 
 
-public struct SDiv: SElement {
+public struct Div: Element {
   public var type = SType.Div
-  public var children = [SSpan]()
+  public var children = [Span]()
 
   public var maxWidth = -1
   public var maxHeight = -1
@@ -12,7 +12,7 @@ public struct SDiv: SElement {
   public var borderRight = false
   public var borderBottom = false
   public var borderLeft = false
-  public var borderType = SBorderType.LightCurved
+  public var borderType = BorderType.LightCurved
   public var expandWidth = false
   public var expandHeight = false
   public var expandParentWidth = false
@@ -23,8 +23,8 @@ public struct SDiv: SElement {
   public init() { }
 
   public mutating func span(args: Any...,
-      fn: ((inout SSpan) throws -> Void)? = nil) throws {
-    var span = SSpan()
+      fn: ((inout Span) throws -> Void)? = nil) throws {
+    var span = Span()
     span.addArgs(args)
     if let af = fn {
       try af(&span)
@@ -125,7 +125,7 @@ public struct SDiv: SElement {
         strings: backgroundStrings)
 
     ///////////////////////////// start /////////////////////////////////////
-    // This code is similar to SSpan's width, except that it deals with height.
+    // This code is similar to Span's width, except that it deals with height.
     var availableHeight = contentHeight - size.childrenHeight
     var childrenList = size.children!
     var heightExpander = size.childHeightExpander

@@ -1,6 +1,6 @@
 
 
-public protocol SElement {
+public protocol Element {
   var type: SType { get }
   var maxWidth: Int { get set }
   var maxHeight: Int { get set }
@@ -10,7 +10,7 @@ public protocol SElement {
   var borderRight: Bool { get set }
   var borderBottom: Bool { get set }
   var borderLeft: Bool { get set }
-  var borderType: SBorderType { get set }
+  var borderType: BorderType { get set }
   var expandWidth: Bool { get set }
   var expandHeight: Bool { get set }
   var expandParentWidth: Bool { get set }
@@ -22,20 +22,20 @@ public protocol SElement {
 
   func draw(x: Int, y: Int, size: TellSize)
 
-  func drawBorder(x: Int, y: Int, size: TellSize) -> SPoint
+  func drawBorder(x: Int, y: Int, size: TellSize) -> Point
 
   func drawBackground(x: Int, y: Int, width: Int, height: Int,
       strings: [String])
 }
 
 
-extension SElement {
+extension Element {
 
-  public func drawBorder(x: Int, y: Int, size: TellSize) -> SPoint {
+  public func drawBorder(x: Int, y: Int, size: TellSize) -> Point {
     let w = size.width
     let h = size.height
     if w <= 0 || h <= 0 {
-      return SPoint.far
+      return Point.far
     }
     var ny = y
     var nx = x
@@ -101,7 +101,7 @@ extension SElement {
       }
       nx += 1
     }
-    return SPoint(x: nx, y: ny)
+    return Point(x: nx, y: ny)
   }
 
   public func drawBackground(x: Int, y: Int, width: Int, height: Int,

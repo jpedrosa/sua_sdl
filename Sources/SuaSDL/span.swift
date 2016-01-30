@@ -1,22 +1,22 @@
 
 
-public enum SVerticalAlign {
+public enum VerticalAlign {
   case Top
   case Center
   case Bottom
 }
 
 
-public enum STextAlign {
+public enum TextAlign {
   case Left
   case Center
   case Right
 }
 
 
-public struct SSpan: SElement {
+public struct Span: Element {
   public var type = SType.Span
-  public var children = [SElement]()
+  public var children = [Element]()
 
   public var maxWidth = -1
   public var maxHeight = -1
@@ -26,14 +26,14 @@ public struct SSpan: SElement {
   public var borderRight = false
   public var borderBottom = false
   public var borderLeft = false
-  public var borderType = SBorderType.LightCurved
+  public var borderType = BorderType.LightCurved
   public var expandWidth = false
   public var expandHeight = false
   public var expandParentWidth = false
   public var expandParentHeight = false
   public var backgroundStrings = [" "]
-  public var align = STextAlign.Left
-  public var verticalAlign = SVerticalAlign.Top
+  public var align = TextAlign.Left
+  public var verticalAlign = VerticalAlign.Top
 
   public init() { }
 
@@ -41,8 +41,8 @@ public struct SSpan: SElement {
     addArgs(args)
   }
 
-  public mutating func div(fn: (inout SDiv) throws -> Void) throws {
-    var d = SDiv()
+  public mutating func div(fn: (inout Div) throws -> Void) throws {
+    var d = Div()
     try fn(&d)
     children.append(d)
   }
@@ -50,15 +50,15 @@ public struct SSpan: SElement {
   public mutating func addArgs(args: [Any]) {
     for v in args {
       if v is String {
-        var t = SText()
+        var t = Text()
         t.text = v as! String
         children.append(t)
-      } else if v is SText {
-        children.append(v as! SText)
-      } else if v is SSpan {
-        children.append(v as! SSpan)
-      } else if v is SDiv {
-        children.append(v as! SDiv)
+      } else if v is Text {
+        children.append(v as! Text)
+      } else if v is Span {
+        children.append(v as! Span)
+      } else if v is Div {
+        children.append(v as! Div)
       }
     }
   }
@@ -163,7 +163,7 @@ public struct SSpan: SElement {
         strings: backgroundStrings)
 
     ///////////////////////////// start /////////////////////////////////////
-    // This code served as a template for SDiv's height expanding.
+    // This code served as a template for Div's height expanding.
     var childrenList = size.children!
     var widthExpander = size.childWidthExpander
     if widthExpander > 0 {
