@@ -98,8 +98,8 @@ if win == nil {
 
 defer { SDL_DestroyWindow(win) }
 
-// let rend = SDL_CreateRenderer(win, -1, SDL.RENDERER_ACCELERATED)
-let rend = SDL_CreateRenderer(win, -1, 0)
+let rend = SDL_CreateRenderer(win, -1, SDL.RENDERER_ACCELERATED)
+// let rend = SDL_CreateRenderer(win, -1, 0)
 
 if rend == nil {
   throw SDLError.CreateRenderer
@@ -134,7 +134,7 @@ if freeSans == nil {
 TTF_SetFontHinting(freeSans, TTF_HINTING_LIGHT)
 // TTF_SetFontHinting(freeSans, TTF_HINTING_NORMAL)
 
-TTF_SetFontStyle(freeSans, TTF_STYLE_BOLD)
+//TTF_SetFontStyle(freeSans, TTF_STYLE_BOLD)
 
 let textGrid = TextGrid(renderer: rend, font: freeSans)
 
@@ -199,24 +199,32 @@ func drawAgain() {
   textGrid.add("d")
   textGrid.add("E")
   textGrid.add("f")
+  textGrid.move(0, y: 14)
+  textGrid.add("Gabriel")
 }
 
 var ev = SDL_Event()
 var done = false
+var invalidated = false
 
 while !done {
   while SDL_PollEvent(&ev) != 0 {
+    invalidated = true
+    p("event \(ev.type)")
     if ev.type == SDL.TEXTINPUT {
       p("text input \(ev.text)")
     } else if ev.type == SDL.QUIT {
       done = true
     }
   }
-  SDL_SetRenderDrawColor(rend, 255, 255, 255, 255)
-  SDL_RenderClear(rend)
-  let msgResult = SDL_RenderCopy(rend, msg, nil, &msgRect)
-  drawAgain()
-  SDL_RenderPresent(rend)
+  if invalidated {
+    SDL_SetRenderDrawColor(rend, 255, 255, 255, 255)
+    SDL_RenderClear(rend)
+    let msgResult = SDL_RenderCopy(rend, msg, nil, &msgRect)
+    drawAgain()
+    SDL_RenderPresent(rend)
+    invalidated = false
+  }
   SDL_Delay(100)
 //   SDL_Delay(16)
 }
