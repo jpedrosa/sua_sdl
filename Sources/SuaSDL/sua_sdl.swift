@@ -22,6 +22,8 @@ public class SDLImpl {
   public let TEXTINPUT: UInt32    = 771
 
   public let WINDOWEVENT_CLOSE: UInt8 = 214
+  public let WINDOWEVENT_FOCUS_GAINED: UInt8 = 12
+  public let WINDOWEVENT_FOCUS_LOST: UInt8 = 13
 
   public let WINDOW_RESIZABLE: UInt32 = 32
 
@@ -125,7 +127,9 @@ public class SDLImpl {
     while !done {
       while SDL_PollEvent(&ev) != 0 {
         invalidated = true
-        if ev.type == SDL.TEXTINPUT {
+        if ev.type == SDL.WINDOWEVENT {
+          p("window event \(ev.window.event)")
+        } else if ev.type == SDL.TEXTINPUT {
           p("text input \(ev.text)")
         } else if ev.type == SDL.QUIT {
           done = true
@@ -151,7 +155,7 @@ public class SDLImpl {
     }
   }
 
-  public var errorMessage: String {
+  var errorMessage: String {
     if let s = String.fromCString(SDL_GetError()) {
       return s
     } else {
