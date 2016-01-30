@@ -35,7 +35,7 @@ public struct TellSize {
   public var childrenHeight = 0
   public var childHeightExpander = 0
   public var childExpandMaxHeight = 0
-  // public var element: NCElement?
+  public var element: SElement?
   public var children: [TellSize]?
 
   public var count = 0                 // Useful to record NCText's char count.
