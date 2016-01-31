@@ -286,6 +286,8 @@ public class TextGrid {
     k += string.utf16.count > 10 ? hashIt(string) : string
     var value = cache[k]
     if value == nil {
+      // The following code appears to lead to a huge memory leak on
+      // release mode.
       let surface = backgroundColor != nil ?
         TTF_RenderUTF8_Shaded(font, string, fontColor, backgroundColor!) :
         TTF_RenderUTF8_Blended(font, string, fontColor)
