@@ -272,22 +272,39 @@ public class TextGrid {
     self.y = y
   }
 
-  func hashIt(string: String) -> String {
-    return "\(MurmurHash3.hash32(string))"
-  }
-
-  public func add(string: String) {
-    var k = "\(fontColor.r),\(fontColor.g),\(fontColor.b),\(fontColor.a)."
+  func prepareKey(string: String) -> String {
+    // Incredibly, long interpolation statements with the code below was causing
+    // memory leaks in Swift when in release mode. So we refactored it into this
+    // method and broke the statements into smaller blocks in order to appease
+    // the compiler.
+    var k = String(fontColor.r) +
+        "," +
+        String(fontColor.g) +
+        "," +
+        String(fontColor.b) +
+        "," +
+        String(fontColor.a) +
+        "."
     if let bg = backgroundColor {
-      k += "\(bg.r),\(bg.g),\(bg.b),\(bg.a)."
+      k += String(bg.r) +
+        "," +
+        String(bg.g) +
+        ","
+      k += String(bg.b) +
+        "," +
+        String(bg.a) +
+        "."
     } else {
       k += "-,-,-,-."
     }
-    k += string.utf16.count > 10 ? hashIt(string) : string
+    k += String(MurmurHash3.hash32(string))
+    return k
+  }
+
+  public func add(string: String) {
+    let k = prepareKey(string)
     var value = cache[k]
     if value == nil {
-      // The following code appears to lead to a huge memory leak on
-      // release mode.
       let surface = backgroundColor != nil ?
         TTF_RenderUTF8_Shaded(font, string, fontColor, backgroundColor!) :
         TTF_RenderUTF8_Blended(font, string, fontColor)
