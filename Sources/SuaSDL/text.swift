@@ -1,4 +1,6 @@
 
+import _Sua
+
 
 public struct Text: Element {
   public var type = SType.Text
@@ -93,9 +95,10 @@ public struct Text: Element {
     if w == len {
       S.textGrid.add(text)
     } else {
-      let z = String(text.characters.substring(0, endIndex: min(w, len)))
+      let flen = min(w, len)
+      let z = String(text.characters.substring(0, endIndex: flen))
       if align != .Left {
-        let n = commonAlign(align, availableWidth: w - len)
+        let n = commonAlign(align, availableWidth: w - flen)
         S.textGrid.move(ap.x + n, y: ap.y)
       }
       S.textGrid.add(z)
