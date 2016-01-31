@@ -216,6 +216,14 @@ public class SImpl {
 public let S = SImpl()
 
 
+public struct TextureCacheValue {
+  var texture: COpaquePointer
+  var width: Int32
+  var count: Int
+  var timestamp: Int
+}
+
+
 public class TextGrid {
 
   public var x = 0
@@ -230,6 +238,7 @@ public class TextGrid {
   public let doublePadding: Int32 = 2
   public var width = 0             // Max number of horizontal cells.
   public var height = 0            // Max number of vertical cells.
+  public var cache = [String: TextureCacheValue]()
 
   public init(renderer: COpaquePointer, font: COpaquePointer) {
     self.renderer = renderer
@@ -238,23 +247,45 @@ public class TextGrid {
     TTF_GlyphMetrics(font, 65, nil, nil, nil, nil, &cellWidth)
   }
 
+  deinit { clearCache() }
+
+  public func clearCache() {
+    for (_, v) in cache {
+      SDL_DestroyTexture(v.texture)
+    }
+    cache = [:]
+  }
+
   public func move(x: Int, y: Int) {
     self.x = x
     self.y = y
   }
 
   public func add(string: String) {
-    let ny = Int32(y) * cellHeight
-    let surface = backgroundColor != nil ?
+    var k = "\(fontColor.r),\(fontColor.g),\(fontColor.b),\(fontColor.a)."
+    if let bg = backgroundColor {
+      k += "\(bg.r),\(bg.g),\(bg.b),\(bg.a)."
+    } else {
+      k += "-,-,-,-."
+    }
+    k += "\(string)"
+    var value = cache[k]
+    if value == nil {
+      let surface = backgroundColor != nil ?
         TTF_RenderUTF8_Shaded(font, string, fontColor, backgroundColor!) :
         TTF_RenderUTF8_Blended(font, string, fontColor)
-    defer { SDL_FreeSurface(surface) }
-    let texture = SDL_CreateTextureFromSurface(renderer, surface)
-    defer { SDL_DestroyTexture(texture) }
-    var textureRect = SDL_Rect(x: padding + (Int32(x) * cellWidth),
-        y: padding + ny, w: surface.memory.w, h: surface.memory.h)
-    SDL_RenderCopy(renderer, texture, nil, &textureRect)
-    x += string.characters.count
+      defer { SDL_FreeSurface(surface) }
+      let texture = SDL_CreateTextureFromSurface(renderer, surface)
+      value = TextureCacheValue(texture: texture, width: surface.memory.w,
+          count: string.characters.count, timestamp: 0)
+
+    }
+    var destRect = SDL_Rect(x: padding + (Int32(x) * cellWidth),
+        y: padding + (Int32(y) * cellHeight), w: value!.width, h: cellHeight)
+    SDL_RenderCopy(renderer, value!.texture, nil, &destRect)
+    x += value!.count
+    value!.timestamp = 1
+    cache[k] = value!
   }
 
   public func changeScreenSize(width: Int32, height: Int32) {
