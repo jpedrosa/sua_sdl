@@ -19,10 +19,11 @@ public enum SError: ErrorType {
 // have opted to just use the S prefix instead.
 public class SImpl {
 
-  public let WINDOW_SHOWN: UInt32 = 4
-  public let QUIT: UInt32         = 256
-  public let WINDOWEVENT: UInt32  = 512
-  public let TEXTINPUT: UInt32    = 771
+  public let WINDOW_SHOWN: UInt32    = 4
+  public let QUIT: UInt32            = 256
+  public let WINDOWEVENT: UInt32     = 512
+  public let MOUSEMOTION: UInt32 = 1024
+  public let TEXTINPUT: UInt32       = 771
 
   public let WINDOWEVENT_SHOWN: UInt8        = 1
   public let WINDOWEVENT_HIDDEN: UInt8       = 2
@@ -183,7 +184,7 @@ public class SImpl {
 
     while !done {
       while SDL_PollEvent(&ev) != 0 {
-        invalidated = true
+        invalidated = ev.type != MOUSEMOTION
         if ev.type == WINDOWEVENT {
           if ev.window.event == WINDOWEVENT_SIZE_CHANGED {
             checkSizeChange()
