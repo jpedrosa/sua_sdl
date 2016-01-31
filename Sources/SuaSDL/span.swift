@@ -1,4 +1,6 @@
 
+import _Sua
+
 
 public enum VerticalAlign {
   case Top
@@ -208,7 +210,7 @@ public struct Span: Element {
     }
 
     if align != .Left && size.expandWidth && availableWidth > 0 {
-      ap.x += align == .Right ? availableWidth : availableWidth / 2
+      ap.x += commonAlign(align, availableWidth: availableWidth)
     }
 
     for s in childrenList {

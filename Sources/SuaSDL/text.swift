@@ -95,7 +95,7 @@ public struct Text: Element {
     } else {
       let z = String(text.characters.substring(0, endIndex: min(w, len)))
       if align != .Left {
-        let n = align == .Right ? w - len : (w - len) / 2
+        let n = commonAlign(align, availableWidth: w - len)
         S.textGrid.move(ap.x + n, y: ap.y)
       }
       S.textGrid.add(z)

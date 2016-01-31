@@ -162,4 +162,18 @@ extension Element {
     }
   }
 
+  // Handles only .Right and .Center types.
+  public func commonAlign(type: TextAlign, availableWidth: Int) -> Int {
+    var r = availableWidth
+    if type == .Center {
+      let share = availableWidth / 2
+      r = share
+      if (share * 2) < availableWidth {
+        r += 1 // Favor extra space on the first half to better match the
+                  // spacing done with expandWidth.
+      }
+    }
+    return r
+  }
+
 }
