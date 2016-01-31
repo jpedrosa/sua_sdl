@@ -255,6 +255,7 @@ public class TextGrid {
     self.font = font
     cellHeight = TTF_FontHeight(font)
     TTF_GlyphMetrics(font, 65, nil, nil, nil, nil, &cellWidth)
+    backgroundColor = SDL_Color(r: 255, g: 255, b: 255, a: 255)
   }
 
   deinit { clearCache() }
