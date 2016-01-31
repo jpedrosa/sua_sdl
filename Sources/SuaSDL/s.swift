@@ -216,11 +216,21 @@ public class SImpl {
 public let S = SImpl()
 
 
-public struct TextureCacheValue {
+public class TextureCacheValue {
   var texture: COpaquePointer
   var width: Int32
   var count: Int
   var timestamp: Int
+
+  init(texture: COpaquePointer, width: Int32, count: Int, timestamp: Int) {
+    self.texture = texture
+    self.width = width
+    self.count = count
+    self.timestamp = timestamp
+  }
+
+  deinit { SDL_DestroyTexture(texture) }
+
 }
 
 
@@ -261,6 +271,10 @@ public class TextGrid {
     self.y = y
   }
 
+  func hashIt(string: String) -> String {
+    return "\(MurmurHash3.hash32(string))"
+  }
+
   public func add(string: String) {
     var k = "\(fontColor.r),\(fontColor.g),\(fontColor.b),\(fontColor.a)."
     if let bg = backgroundColor {
@@ -268,24 +282,23 @@ public class TextGrid {
     } else {
       k += "-,-,-,-."
     }
-    k += "\(string)"
+    k += string.utf16.count > 10 ? hashIt(string) : string
     var value = cache[k]
     if value == nil {
       let surface = backgroundColor != nil ?
         TTF_RenderUTF8_Shaded(font, string, fontColor, backgroundColor!) :
         TTF_RenderUTF8_Blended(font, string, fontColor)
       defer { SDL_FreeSurface(surface) }
-      let texture = SDL_CreateTextureFromSurface(renderer, surface)
-      value = TextureCacheValue(texture: texture, width: surface.memory.w,
-          count: string.characters.count, timestamp: 0)
-
+      value = TextureCacheValue(
+          texture: SDL_CreateTextureFromSurface(renderer, surface),
+          width: surface.memory.w, count: string.characters.count, timestamp: 1)
+      cache[k] = value
     }
     var destRect = SDL_Rect(x: padding + (Int32(x) * cellWidth),
         y: padding + (Int32(y) * cellHeight), w: value!.width, h: cellHeight)
     SDL_RenderCopy(renderer, value!.texture, nil, &destRect)
     x += value!.count
     value!.timestamp = 1
-    cache[k] = value!
   }
 
   public func changeScreenSize(width: Int32, height: Int32) {
