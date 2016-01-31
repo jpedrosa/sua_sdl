@@ -90,7 +90,8 @@ public class SImpl {
 
     defer { TTF_Quit() }
 
-    let fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+   let fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+  //  let fontPath = "/usr/share/fonts/truetype/freefont/FreeMono.ttf"
 
     let freeSans = TTF_OpenFont(fontPath, 12)
 
@@ -219,13 +220,11 @@ public let S = SImpl()
 public class TextureCacheValue {
   var texture: COpaquePointer
   var width: Int32
-  var count: Int
   var timestamp: Int
 
-  init(texture: COpaquePointer, width: Int32, count: Int, timestamp: Int) {
+  init(texture: COpaquePointer, width: Int32, timestamp: Int) {
     self.texture = texture
     self.width = width
-    self.count = count
     self.timestamp = timestamp
   }
 
@@ -272,7 +271,7 @@ public class TextGrid {
     self.y = y
   }
 
-  func prepareKey(string: String) -> String {
+  func prepareKey(c: UInt16) -> String {
     // Incredibly, long interpolation statements with the code below was causing
     // memory leaks in Swift when in release mode. So we refactored it into this
     // method and broke the statements into smaller blocks in order to appease
@@ -294,31 +293,31 @@ public class TextGrid {
         "," +
         String(bg.a) +
         "."
-    } else {
-      k += "-,-,-,-."
     }
-    k += String(MurmurHash3.hash32(string))
+    k += String(c)
     return k
   }
 
   public func add(string: String) {
-    let k = prepareKey(string)
-    var value = cache[k]
-    if value == nil {
-      let surface = backgroundColor != nil ?
-        TTF_RenderUTF8_Shaded(font, string, fontColor, backgroundColor!) :
-        TTF_RenderUTF8_Blended(font, string, fontColor)
-      defer { SDL_FreeSurface(surface) }
-      value = TextureCacheValue(
-          texture: SDL_CreateTextureFromSurface(renderer, surface),
-          width: surface.memory.w, count: string.characters.count, timestamp: 1)
-      cache[k] = value
+    for c in string.utf16 {
+      let k = prepareKey(c)
+      var value = cache[k]
+      if value == nil {
+        let surface = backgroundColor != nil ?
+          TTF_RenderGlyph_Shaded(font, c, fontColor, backgroundColor!) :
+          TTF_RenderGlyph_Blended(font, c, fontColor)
+        defer { SDL_FreeSurface(surface) }
+        value = TextureCacheValue(
+            texture: SDL_CreateTextureFromSurface(renderer, surface),
+            width: surface.memory.w, timestamp: 1)
+        cache[k] = value
+      }
+      var destRect = SDL_Rect(x: padding + (Int32(x) * cellWidth),
+          y: padding + (Int32(y) * cellHeight), w: value!.width, h: cellHeight)
+      SDL_RenderCopy(renderer, value!.texture, nil, &destRect)
+      x += 1
+      value!.timestamp = 1
     }
-    var destRect = SDL_Rect(x: padding + (Int32(x) * cellWidth),
-        y: padding + (Int32(y) * cellHeight), w: value!.width, h: cellHeight)
-    SDL_RenderCopy(renderer, value!.texture, nil, &destRect)
-    x += value!.count
-    value!.timestamp = 1
   }
 
   public func changeScreenSize(width: Int32, height: Int32) {
