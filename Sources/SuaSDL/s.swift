@@ -220,11 +220,13 @@ public let S = SImpl()
 public class TextureCacheValue {
   var texture: COpaquePointer
   var width: Int32
+  var xOffset: Int32
   var timestamp: Int
 
-  init(texture: COpaquePointer, width: Int32, timestamp: Int) {
+  init(texture: COpaquePointer, width: Int32, xOffset: Int32, timestamp: Int) {
     self.texture = texture
     self.width = width
+    self.xOffset = xOffset
     self.timestamp = timestamp
   }
 
@@ -307,12 +309,20 @@ public class TextGrid {
           TTF_RenderGlyph_Shaded(font, c, fontColor, backgroundColor!) :
           TTF_RenderGlyph_Blended(font, c, fontColor)
         defer { SDL_FreeSurface(surface) }
+        var minx: Int32 = 0
+        TTF_GlyphMetrics(font, c, &minx, nil, nil, nil, nil)
+        // xOffset is for correcting the SDL code that turns negative minx into
+        // a positive number. Noticed this for the "╮" top-right border
+        // character which has minx -1 with the Dejavu Mono font. SDL turns it
+        // into 1 to do its drawing. We use this offset number in the render
+        // function a little below.
         value = TextureCacheValue(
             texture: SDL_CreateTextureFromSurface(renderer, surface),
-            width: surface.memory.w, timestamp: 1)
+            width: surface.memory.w, xOffset: minx < 0 ? minx : 0, timestamp: 1)
         cache[k] = value
       }
-      var destRect = SDL_Rect(x: padding + (Int32(x) * cellWidth),
+      var destRect = SDL_Rect(
+          x: padding + (Int32(x) * cellWidth) + value!.xOffset,
           y: padding + (Int32(y) * cellHeight), w: value!.width, h: cellHeight)
       SDL_RenderCopy(renderer, value!.texture, nil, &destRect)
       x += 1
