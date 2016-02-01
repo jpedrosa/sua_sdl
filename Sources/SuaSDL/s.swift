@@ -196,6 +196,9 @@ public class SImpl {
           p("mouse button down \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
         } else if ev.type == MOUSEBUTTONUP {
           p("mouse button up \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
+          p("mainDiv \(mainDiv.lastx) \(mainDiv.lasty) \(mainDiv.lastSize.width) \(mainDiv.lastSize.height)")
+          let cp = textGrid.pointToCell(ev.button.x, y: ev.button.y)
+          p("cellPoint \(cp)")
         } else if ev.type == TEXTINPUT {
           p("text input \(ev.text)")
         } else if ev.type == QUIT {
@@ -239,6 +242,12 @@ public class TextureCacheValue {
 
   deinit { SDL_DestroyTexture(texture) }
 
+}
+
+
+public struct CellPoint {
+  var x: Int
+  var y: Int
 }
 
 
@@ -340,6 +349,16 @@ public class TextGrid {
   public func changeScreenSize(width: Int32, height: Int32) {
     self.width = Int((width - doublePadding) / cellWidth)
     self.height = Int((height - doublePadding) / cellHeight)
+  }
+
+  public func pointToCell(x: Int32, y: Int32) -> CellPoint? {
+    p("pointToCell \(x) \(y)")
+    if x >= padding && x <= (cellWidth * Int32(width)) + padding &&
+        y >= padding && y <= (cellHeight * Int32(height)) + padding {
+      return CellPoint(x: Int((x - padding) / cellWidth),
+          y: Int((y - padding) / cellHeight))
+    }
+    return nil
   }
 
 }
