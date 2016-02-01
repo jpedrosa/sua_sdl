@@ -1,4 +1,6 @@
 
+import _Sua
+
 
 public protocol Element {
   var type: SType { get }
@@ -180,8 +182,8 @@ extension Element {
   }
 
   public func matchPoint(x: Int, y: Int) -> Bool {
-    return x >= lastx && x <= lastx + lastSize.width && y >= lasty &&
-        y <= lasty + lastSize.height
+    return x >= lastx && x <= lastx + lastSize.width - 1 && y >= lasty &&
+        y <= lasty + lastSize.height - 1
   }
 
 }
