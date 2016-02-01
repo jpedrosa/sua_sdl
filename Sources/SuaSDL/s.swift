@@ -329,6 +329,8 @@ public class TextGrid {
   }
 
   public func add(string: String) {
+    let ny = padding + (Int32(y) * cellHeight) + descent
+    var nx = padding + (Int32(x) * cellWidth)
     for c in string.utf16 {
       let k = prepareKey(c)
       var value = cache[k]
@@ -349,12 +351,11 @@ public class TextGrid {
             width: surface.memory.w, xOffset: minx < 0 ? minx : 0, timestamp: 1)
         cache[k] = value
       }
-      var destRect = SDL_Rect(
-          x: padding + (Int32(x) * cellWidth) + value!.xOffset,
-          y: padding + (Int32(y) * cellHeight) + descent,
+      var destRect = SDL_Rect(x: nx + value!.xOffset, y: ny,
           w: value!.width, h: cellHeight)
       SDL_RenderCopy(renderer, value!.texture, nil, &destRect)
       x += 1
+      nx += cellWidth
       value!.timestamp = 1
     }
   }
