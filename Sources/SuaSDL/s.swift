@@ -392,10 +392,10 @@ public class TextGrid {
     return nil
   }
 
-  public func withColor(color: Color?, backgroundColor: Color?,
-      fn: () -> Void) {
+  public func withColor<Result>(color: Color?, backgroundColor: Color?,
+        @noescape fn: () -> Result) -> Result {
     if color == nil && backgroundColor == nil {
-      fn()
+      return fn()
     } else {
       let c = color?._color
       let bg = backgroundColor?._color
@@ -411,7 +411,7 @@ public class TextGrid {
         fontColor = ac
       }
       self.backgroundColor = bg
-      fn()
+      return fn()
     }
   }
 

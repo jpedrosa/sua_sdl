@@ -23,6 +23,8 @@ public class Text: Element {
   public var backgroundStrings = [" "]
   public var backgroundColor: Color?
   public var color: Color?
+  public var borderBackgroundColor: Color?
+  public var borderColor: Color?
   public var lastx = 0
   public var lasty = 0
   public var lastSize = TellSize.EMPTY
@@ -96,7 +98,10 @@ public class Text: Element {
     if w <= 0 || contentHeight <= 0 {
       return
     }
-    let ap = drawBorder(x, y: y, size: size)
+    let ap = S.textGrid.withColor(borderColor,
+        backgroundColor: borderBackgroundColor) { () -> Point in
+      return self.drawBorder(x, y: y, size: size)
+    }
     S.textGrid.withColor(color, backgroundColor: backgroundColor) {
       self.drawBackground(ap.x, y: ap.y, width: w, height: contentHeight,
           strings: self.backgroundStrings)

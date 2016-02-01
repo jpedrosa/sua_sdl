@@ -13,6 +13,7 @@ try S.start() { div in
   try div.span("Sua")
   var o = Text()
   o.backgroundColor = Color(r: 255, g: 0, b: 0, a: 255)
+  o.borderColor = Color(r: 125, g: 125, b: 125, a: 255)
   o.text = "OVNI"
   o.borderTop = true
   o.borderBottom = true
@@ -30,6 +31,9 @@ try S.start() { div in
   try div.span("Maxwell")
   try div.span("Disk")
   var clip = Text()
+  clip.color = Color(r: 255, g: 255, b: 255, a: 255)
+  clip.backgroundColor = Color(r: 0, g: 0, b: 255, a: 255)
+  clip.borderBackgroundColor = Color(r: 255, g: 255, b: 0, a: 255)
   clip.text = "CLIPPED"
   clip.borderTop = true
   clip.borderRight = true
