@@ -25,6 +25,10 @@ public class Text: Element {
   public var color: Color?
   public var borderBackgroundColor: Color?
   public var borderColor: Color?
+  public var bold = false
+  public var italic = false
+  public var underline = false
+  public var strikethrough = false
   public var lastx = 0
   public var lasty = 0
   public var lastSize = TellSize.EMPTY
