@@ -22,7 +22,10 @@ public class SImpl {
   public let WINDOW_SHOWN: UInt32    = 4
   public let QUIT: UInt32            = 256
   public let WINDOWEVENT: UInt32     = 512
-  public let MOUSEMOTION: UInt32 = 1024
+  public let MOUSEMOTION: UInt32     = 1024
+  public let MOUSEBUTTONDOWN: UInt32 = 1025
+  public let MOUSEBUTTONUP: UInt32   = 1026
+  public let MOUSEWHEEL: UInt32      = 1027
   public let TEXTINPUT: UInt32       = 771
 
   public let WINDOWEVENT_SHOWN: UInt8        = 1
@@ -189,7 +192,10 @@ public class SImpl {
           if ev.window.event == WINDOWEVENT_SIZE_CHANGED {
             checkSizeChange()
           }
-//          p("window event \(ev.window.event)")
+        } else if ev.type == MOUSEBUTTONDOWN {
+          p("mouse button down \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
+        } else if ev.type == MOUSEBUTTONUP {
+          p("mouse button up \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
         } else if ev.type == TEXTINPUT {
           p("text input \(ev.text)")
         } else if ev.type == QUIT {
