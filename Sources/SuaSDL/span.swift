@@ -240,4 +240,27 @@ public class Span: Element {
     }
   }
 
+  public func pointToList(x: Int, y: Int, inout list: [Element]) -> Bool {
+    if matchPoint(x, y: y) {
+      list.append(self)
+      for c in children {
+        if c.type == .Text {
+          if c.matchPoint(x, y: y) {
+            list.append(c)
+          }
+        } else if c.type == .Div {
+          if (c as! Div).pointToList(x, y: y, list: &list) {
+            break
+          }
+        } else if c.type == .Span {
+          if (c as! Span).pointToList(x, y: y, list: &list) {
+            break
+          }
+        }
+      }
+      return true
+    }
+    return false
+  }
+
 }

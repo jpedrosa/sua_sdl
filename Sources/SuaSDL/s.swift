@@ -197,8 +197,13 @@ public class SImpl {
         } else if ev.type == MOUSEBUTTONUP {
           p("mouse button up \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
           p("mainDiv \(mainDiv.lastx) \(mainDiv.lasty) \(mainDiv.lastSize.width) \(mainDiv.lastSize.height)")
-          let cp = textGrid.pointToCell(ev.button.x, y: ev.button.y)
-          p("cellPoint \(cp)")
+          if let cp = textGrid.pointToCell(ev.button.x, y: ev.button.y) {
+            p("cellPoint \(cp)")
+            var a = [Element]()
+            if mainDiv.pointToList(cp.x, y: cp.y, list: &a) {
+              p("pointToList \(a)")
+            }
+          }
         } else if ev.type == TEXTINPUT {
           p("text input \(ev.text)")
         } else if ev.type == QUIT {

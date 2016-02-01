@@ -179,4 +179,9 @@ extension Element {
     return r
   }
 
+  public func matchPoint(x: Int, y: Int) -> Bool {
+    return x >= lastx && x <= lastx + lastSize.width && y >= lasty &&
+        y <= lasty + lastSize.height
+  }
+
 }

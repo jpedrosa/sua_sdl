@@ -204,4 +204,17 @@ public class Div: Element {
     draw(x, y: y, size: size)
   }
 
+  public func pointToList(x: Int, y: Int, inout list: [Element]) -> Bool {
+    if matchPoint(x, y: y) {
+      list.append(self)
+      for c in children {
+        if c.pointToList(x, y: y, list: &list) {
+          break
+        }
+      }
+      return true
+    }
+    return false
+  }
+
 }
