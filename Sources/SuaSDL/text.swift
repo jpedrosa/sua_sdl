@@ -25,10 +25,7 @@ public class Text: Element {
   public var color: Color?
   public var borderBackgroundColor: Color?
   public var borderColor: Color?
-  public var bold = false
-  public var italic = false
-  public var underline = false
-  public var strikethrough = false
+  public var _style: Int32 = 0
   public var lastx = 0
   public var lasty = 0
   public var lastSize = TellSize.EMPTY
@@ -106,23 +103,45 @@ public class Text: Element {
         backgroundColor: borderBackgroundColor) { () -> Point in
       return self.drawBorder(x, y: y, size: size)
     }
-    S.textGrid.withColor(color, backgroundColor: backgroundColor) {
-      self.drawBackground(ap.x, y: ap.y, width: w, height: contentHeight,
-          strings: self.backgroundStrings)
-      S.textGrid.move(ap.x, y: ap.y)
-      let len = size.count
-      if w == len {
-        S.textGrid.add(self.text)
-      } else {
-        let flen = min(w, len)
-        let z = String(self.text.characters.substring(0, endIndex: flen))
-        if self.align != .Left {
-          let n = self.commonAlign(self.align, availableWidth: w - flen)
-          S.textGrid.move(ap.x + n, y: ap.y)
+    S.textGrid.withStyle(_style) {
+      S.textGrid.withColor(color, backgroundColor: backgroundColor) {
+        self.drawBackground(ap.x, y: ap.y, width: w, height: contentHeight,
+            strings: self.backgroundStrings)
+        S.textGrid.move(ap.x, y: ap.y)
+        let len = size.count
+        if w == len {
+          S.textGrid.add(self.text)
+        } else {
+          let flen = min(w, len)
+          let z = String(self.text.characters.substring(0, endIndex: flen))
+          if self.align != .Left {
+            let n = self.commonAlign(self.align, availableWidth: w - flen)
+            S.textGrid.move(ap.x + n, y: ap.y)
+          }
+          S.textGrid.add(z)
         }
-        S.textGrid.add(z)
       }
     }
+  }
+
+  public var bold: Bool {
+    get { return _style & S.BOLD > 0 }
+    set { _style |= S.BOLD }
+  }
+
+  public var underline: Bool {
+    get { return _style & S.UNDERLINE > 0 }
+    set { _style |= S.UNDERLINE }
+  }
+
+  public var italic: Bool {
+    get { return _style & S.ITALIC > 0 }
+    set { _style |= S.ITALIC }
+  }
+
+  public var strikethrough: Bool {
+    get { return _style & S.STRIKETHROUGH > 0 }
+    set { _style |= S.STRIKETHROUGH }
   }
 
 }

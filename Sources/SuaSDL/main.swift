@@ -81,6 +81,10 @@ try S.start() { div in
     span.expandWidth = true
   }
   var align = Text()
+  align.bold = true
+  align.underline = true
+  align.italic = true
+  align.strikethrough = true
   align.text = "Align Me"
   align.align = .Center
   align.expandWidth = true

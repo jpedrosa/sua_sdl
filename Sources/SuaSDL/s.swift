@@ -69,7 +69,7 @@ public class SImpl {
   public let BOLD = TTF_STYLE_BOLD
   public let UNDERLINE = TTF_STYLE_UNDERLINE
   public let ITALIC = TTF_STYLE_ITALIC
-  public let STRIKETRHOUGH = TTF_STYLE_STRIKETHROUGH
+  public let STRIKETHROUGH = TTF_STYLE_STRIKETHROUGH
 
   public var _textGrid: TextGrid?
 
@@ -350,6 +350,8 @@ public class TextGrid {
         String(bg.a) +
         "."
     }
+    k += String(style)
+    k += "."
     k += String(c)
     return k
   }
@@ -361,6 +363,9 @@ public class TextGrid {
       let k = prepareKey(c)
       var value = cache[k]
       if value == nil {
+        if style != TTF_GetFontStyle(font) {
+          TTF_SetFontStyle(font, style)
+        }
         let surface = backgroundColor != nil ?
           TTF_RenderGlyph_Shaded(font, c, fontColor, backgroundColor!) :
           TTF_RenderGlyph_Blended(font, c, fontColor)
