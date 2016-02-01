@@ -66,6 +66,11 @@ public class SImpl {
 
   public let RENDERER_ACCELERATED: UInt32 = 2
 
+  public let BOLD = TTF_STYLE_BOLD
+  public let UNDERLINE = TTF_STYLE_UNDERLINE
+  public let ITALIC = TTF_STYLE_ITALIC
+  public let STRIKETRHOUGH = TTF_STYLE_STRIKETHROUGH
+
   public var _textGrid: TextGrid?
 
   public var textGrid: TextGrid {
@@ -295,6 +300,7 @@ public class TextGrid {
   public var descent: Int32 = 0
   public var colorStack = [SDL_Color?]()
   public var styleStack = [Int32]()
+  public var style: Int32 = 0
 
   public init(renderer: COpaquePointer, font: COpaquePointer) {
     self.renderer = renderer
@@ -418,4 +424,17 @@ public class TextGrid {
     }
   }
 
+  public func withStyle<Result>(style: Int32,
+      @noescape fn: () -> Result) -> Result {
+    if style == self.style {
+      return fn()
+    } else {
+      styleStack.append(self.style)
+      defer {
+        self.style = styleStack.removeLast()
+      }
+      self.style = style
+      return fn()
+    }
+  }
 }
