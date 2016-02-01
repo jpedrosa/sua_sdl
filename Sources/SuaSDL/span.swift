@@ -16,7 +16,7 @@ public enum TextAlign {
 }
 
 
-public struct Span: Element {
+public class Span: Element {
   public var type = SType.Span
   public var children = [Element]()
 
@@ -39,20 +39,20 @@ public struct Span: Element {
 
   public init() { }
 
-  public mutating func add(args: Any...) {
+  public func add(args: Any...) {
     addArgs(args)
   }
 
-  public mutating func div(fn: (inout Div) throws -> Void) throws {
+  public func div(fn: (inout Div) throws -> Void) throws {
     var d = Div()
     try fn(&d)
     children.append(d)
   }
 
-  public mutating func addArgs(args: [Any]) {
+  public func addArgs(args: [Any]) {
     for v in args {
       if v is String {
-        var t = Text()
+        let t = Text()
         t.text = v as! String
         children.append(t)
       } else if v is Text {

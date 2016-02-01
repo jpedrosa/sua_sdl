@@ -1,6 +1,6 @@
 
 
-public struct Div: Element {
+public class Div: Element {
   public var type = SType.Div
   public var children = [Span]()
 
@@ -22,7 +22,7 @@ public struct Div: Element {
 
   public init() { }
 
-  public mutating func span(args: Any...,
+  public func span(args: Any...,
       fn: ((inout Span) throws -> Void)? = nil) throws {
     var span = Span()
     span.addArgs(args)

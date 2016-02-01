@@ -2,7 +2,7 @@
 import _Sua
 
 
-public struct Text: Element {
+public class Text: Element {
   public var type = SType.Text
   public var text = ""
 
