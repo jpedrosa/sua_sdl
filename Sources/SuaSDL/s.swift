@@ -202,6 +202,11 @@ public class SImpl {
             var a = [Element]()
             if mainDiv.pointToList(cp.x, y: cp.y, list: &a) {
               p("pointToList \(a)")
+              if let e = a.last {
+                if e.type == .Text {
+                  p("Simon says: \((e as! Text).text)")
+                }
+              }
             }
           }
         } else if ev.type == TEXTINPUT {
