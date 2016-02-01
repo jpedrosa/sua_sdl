@@ -276,6 +276,7 @@ public class TextGrid {
   public var width = 0             // Max number of horizontal cells.
   public var height = 0            // Max number of vertical cells.
   public var cache = [String: TextureCacheValue]()
+  public var descent: Int32 = 0
 
   public init(renderer: COpaquePointer, font: COpaquePointer) {
     self.renderer = renderer
@@ -283,6 +284,7 @@ public class TextGrid {
     cellHeight = TTF_FontHeight(font)
     TTF_GlyphMetrics(font, 65, nil, nil, nil, nil, &cellWidth)
     backgroundColor = SDL_Color(r: 255, g: 255, b: 255, a: 255)
+    descent = TTF_FontDescent(font)
   }
 
   deinit { clearCache() }
@@ -349,7 +351,8 @@ public class TextGrid {
       }
       var destRect = SDL_Rect(
           x: padding + (Int32(x) * cellWidth) + value!.xOffset,
-          y: padding + (Int32(y) * cellHeight), w: value!.width, h: cellHeight)
+          y: padding + (Int32(y) * cellHeight) + descent,
+          w: value!.width, h: cellHeight)
       SDL_RenderCopy(renderer, value!.texture, nil, &destRect)
       x += 1
       value!.timestamp = 1
