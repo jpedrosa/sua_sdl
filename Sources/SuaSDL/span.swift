@@ -36,6 +36,10 @@ public class Span: Element {
   public var backgroundStrings = [" "]
   public var align = TextAlign.Left
   public var verticalAlign = VerticalAlign.Top
+  public var lastx = 0
+  public var lasty = 0
+  public var lastSize = TellSize.EMPTY
+
 
   public init() { }
 

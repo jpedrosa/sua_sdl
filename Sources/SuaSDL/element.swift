@@ -16,6 +16,9 @@ public protocol Element {
   var expandParentWidth: Bool { get set }
   var expandParentHeight: Bool { get set }
   var backgroundStrings: [String] { get set }
+  var lastx: Int { get set }
+  var lasty: Int { get set }
+  var lastSize: TellSize { get set }
 
 
   func tellSize() -> TellSize

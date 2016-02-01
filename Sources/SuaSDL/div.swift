@@ -18,6 +18,9 @@ public class Div: Element {
   public var expandParentWidth = false
   public var expandParentHeight = false
   public var backgroundStrings = [" "]
+  public var lastx = 0
+  public var lasty = 0
+  public var lastSize = TellSize.EMPTY
 
 
   public init() { }
