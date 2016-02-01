@@ -14,6 +14,22 @@ public enum SError: ErrorType {
 }
 
 
+public struct Color: CustomStringConvertible {
+
+  public var _color: SDL_Color
+
+  public init(r: Int, g: Int, b: Int, a: Int) {
+    _color = SDL_Color(r: UInt8(r), g: UInt8(g), b: UInt8(b), a: UInt8(a))
+  }
+
+  public var description: String {
+    return "Color(r: \(_color.r), g: \(_color.g), b: \(_color.b), " +
+        "a: \(_color.a))"
+  }
+
+}
+
+
 // S stands for Simple, the first name of the SDL acronym.
 // Rather than to have the SDL name repeated for our own custom classes, we
 // have opted to just use the S prefix instead.
@@ -277,6 +293,7 @@ public class TextGrid {
   public var height = 0            // Max number of vertical cells.
   public var cache = [String: TextureCacheValue]()
   public var descent: Int32 = 0
+  public var colorStack = [SDL_Color?]()
 
   public init(renderer: COpaquePointer, font: COpaquePointer) {
     self.renderer = renderer
@@ -373,6 +390,29 @@ public class TextGrid {
           y: Int((y - padding) / cellHeight))
     }
     return nil
+  }
+
+  public func withColor(color: Color?, backgroundColor: Color?,
+      fn: () -> Void) {
+    if color == nil && backgroundColor == nil {
+      fn()
+    } else {
+      let c = color?._color
+      let bg = backgroundColor?._color
+      colorStack.append(fontColor)
+      colorStack.append(self.backgroundColor)
+      defer {
+        self.backgroundColor = colorStack.removeLast()
+        if let ac = colorStack.removeLast() {
+          fontColor = ac
+        }
+      }
+      if let ac = c {
+        fontColor = ac
+      }
+      self.backgroundColor = bg
+      fn()
+    }
   }
 
 }

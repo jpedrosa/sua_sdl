@@ -21,6 +21,8 @@ public class Text: Element {
   public var expandParentHeight = false
   public var align = TextAlign.Left
   public var backgroundStrings = [" "]
+  public var backgroundColor: Color?
+  public var color: Color?
   public var lastx = 0
   public var lasty = 0
   public var lastSize = TellSize.EMPTY
@@ -95,20 +97,22 @@ public class Text: Element {
       return
     }
     let ap = drawBorder(x, y: y, size: size)
-    drawBackground(ap.x, y: ap.y, width: w, height: contentHeight,
-        strings: backgroundStrings)
-    S.textGrid.move(ap.x, y: ap.y)
-    let len = size.count
-    if w == len {
-      S.textGrid.add(text)
-    } else {
-      let flen = min(w, len)
-      let z = String(text.characters.substring(0, endIndex: flen))
-      if align != .Left {
-        let n = commonAlign(align, availableWidth: w - flen)
-        S.textGrid.move(ap.x + n, y: ap.y)
+    S.textGrid.withColor(color, backgroundColor: backgroundColor) {
+      self.drawBackground(ap.x, y: ap.y, width: w, height: contentHeight,
+          strings: self.backgroundStrings)
+      S.textGrid.move(ap.x, y: ap.y)
+      let len = size.count
+      if w == len {
+        S.textGrid.add(self.text)
+      } else {
+        let flen = min(w, len)
+        let z = String(self.text.characters.substring(0, endIndex: flen))
+        if self.align != .Left {
+          let n = self.commonAlign(self.align, availableWidth: w - flen)
+          S.textGrid.move(ap.x + n, y: ap.y)
+        }
+        S.textGrid.add(z)
       }
-      S.textGrid.add(z)
     }
   }
 

@@ -12,6 +12,7 @@ try S.start() { div in
   S.mainDiv.borderLeft = true
   try div.span("Sua")
   var o = Text()
+  o.backgroundColor = Color(r: 255, g: 0, b: 0, a: 255)
   o.text = "OVNI"
   o.borderTop = true
   o.borderBottom = true
