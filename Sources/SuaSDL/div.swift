@@ -118,6 +118,9 @@ public class Div: Element {
   }
 
   public func draw(x: Int, y: Int, size: TellSize) {
+    lastx = x
+    lasty = y
+    lastSize = size
     let w = size.width - size.borderLeft - size.borderRight
     var contentHeight = size.height - size.borderTop - size.borderBottom
     if w <= 0 || contentHeight <= 0 {
