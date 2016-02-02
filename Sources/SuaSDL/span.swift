@@ -61,22 +61,14 @@ public class Span: Element {
           for (s, hc) in try Hexacoral.parseText(vs.bytes) {
             let t = Text()
             if let ahc = hc {
-              t._style = Int32(ahc.style)
-              if let ac = ahc.color {
-                t.color = Color(r: ac.r, g: ac.g, b: ac.b,
-                    a: ac.a != nil ? ac.a! : 255)
-              }
-              if let ac = ahc.backgroundColor {
-                t.backgroundColor = Color(r: ac.r, g: ac.g, b: ac.b,
-                    a: ac.a != nil ? ac.a! : 255)
-              }
+              t.updateFromHexacoral(ahc)
             }
-            t.text = s
+            t._text = s
             children.append(t)
           }
         } catch {
           let t = Text()
-          t.text = "Hexacoral error parsing this: \(vs)"
+          t._text = vs
           children.append(t)
         }
       } else if v is Text {

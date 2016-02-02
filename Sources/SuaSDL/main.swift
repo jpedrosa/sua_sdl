@@ -11,7 +11,7 @@ try S.start() { div in
   S.mainDiv.borderBottom = true
   S.mainDiv.borderLeft = true
   try div.span("%u#F00=Hexa%u#0F0=co%u#00F=ral")
-  try div.span("Sua")
+  try div.span("%#0F0,000=S%#8ef,000=u%#EE0,000=a")
   var o = Text()
   o.backgroundColor = Color(r: 255, g: 0, b: 0, a: 255)
   o.borderColor = Color(r: 125, g: 125, b: 125, a: 255)

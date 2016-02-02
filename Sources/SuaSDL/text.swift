@@ -4,7 +4,7 @@ import _Sua
 
 public class Text: Element {
   public var type = SType.Text
-  public var text = ""
+  public var _text = ""
 
   public var maxWidth = -1
   public var maxHeight = -1
@@ -36,7 +36,7 @@ public class Text: Element {
   public func tellSize() -> TellSize {
     var t = TellSize()
     t.element = self
-    t.count = text.characters.count
+    t.count = _text.characters.count
     if width > 0 {
       t.width = width
     } else {
@@ -110,10 +110,10 @@ public class Text: Element {
         S.textGrid.move(ap.x, y: ap.y)
         let len = size.count
         if w == len {
-          S.textGrid.add(self.text)
+          S.textGrid.add(self._text)
         } else {
           let flen = min(w, len)
-          let z = String(self.text.characters.substring(0, endIndex: flen))
+          let z = String(self._text.characters.substring(0, endIndex: flen))
           if self.align != .Left {
             let n = self.commonAlign(self.align, availableWidth: w - flen)
             S.textGrid.move(ap.x + n, y: ap.y)
@@ -142,6 +142,51 @@ public class Text: Element {
   public var strikethrough: Bool {
     get { return _style & S.STRIKETHROUGH > 0 }
     set { _style |= S.STRIKETHROUGH }
+  }
+
+  public func updateFromHexacoral(hc: Hexacoral) {
+    _style = Int32(hc.style)
+    if let ac = hc.color {
+      color = Color(r: ac.r, g: ac.g, b: ac.b,
+          a: ac.a != nil ? ac.a! : 255)
+    } else {
+      color = nil
+    }
+    if let ac = hc.backgroundColor {
+      backgroundColor = Color(r: ac.r, g: ac.g, b: ac.b,
+          a: ac.a != nil ? ac.a! : 255)
+    } else {
+      backgroundColor = nil
+    }
+  }
+
+  public var text: String {
+    get { return _text }
+    set {
+      var s = newValue
+      if !s.isEmpty && s.utf16.codeUnitAt(0) == 35 { // %
+        do {
+          let a = s.bytes
+          let len = a.count
+          let (hc, advi) = try Hexacoral.parseHexacoral(a, startIndex: 1,
+              maxBytes: len)
+          if let ahc = hc {
+            updateFromHexacoral(ahc)
+            let i = advi + 1
+            if i < len {
+              if let z = String.fromCharCodes(a, start: i, end: len - 1) {
+                s = z
+              }
+            } else {
+              s = ""
+            }
+          }
+        } catch {
+          // Ignore.
+        }
+      }
+      _text = s
+    }
   }
 
 }
