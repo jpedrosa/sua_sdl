@@ -20,7 +20,29 @@ public typealias Color = SDL_Color
 extension Color {
 
   public static let red = Color(r: 255, g: 0, b: 0, a: 255)
-  
+
+}
+
+
+extension Hexacoral {
+
+  public func toSStyle() -> Int32 {
+    var n: Int32 = 0
+    if isBold {
+      n |= S.BOLD
+    }
+    if isUnderline {
+      n |= S.UNDERLINE
+    }
+    if isStrikeOut {
+      n |= S.STRIKETHROUGH
+    }
+    if isItalic {
+      n |= S.ITALIC
+    }
+    return n
+  }
+
 }
 
 

@@ -20,6 +20,7 @@ public protocol Element {
   var backgroundStrings: [String] { get set }
   var borderBackgroundColor: Color? { get set }
   var borderColor: Color? { get set }
+  var _borderStyle: Int32 { get set }
   var lastx: Int { get set }
   var lasty: Int { get set }
   var lastSize: TellSize { get set }
@@ -193,6 +194,7 @@ extension Element {
     set {
       borderColor = nil
       borderBackgroundColor = nil
+      _borderStyle = 0
       do {
         let a = newValue.bytes
         let (hc, _) = try Hexacoral.parseHexacoral(a, startIndex: 1,

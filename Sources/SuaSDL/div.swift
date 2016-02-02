@@ -20,6 +20,7 @@ public class Div: Element {
   public var backgroundStrings = [" "]
   public var borderBackgroundColor: Color?
   public var borderColor: Color?
+  public var _borderStyle: Int32 = 0
   public var lastx = 0
   public var lasty = 0
   public var lastSize = TellSize.EMPTY

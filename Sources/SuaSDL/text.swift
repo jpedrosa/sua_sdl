@@ -26,6 +26,7 @@ public class Text: Element {
   public var borderBackgroundColor: Color?
   public var borderColor: Color?
   public var _style: Int32 = 0
+  public var _borderStyle: Int32 = 0
   public var lastx = 0
   public var lasty = 0
   public var lastSize = TellSize.EMPTY
@@ -153,11 +154,7 @@ public class Text: Element {
   }
 
   public func updateFromHexacoral(hc: Hexacoral) {
-    _style = 0
-    bold = hc.isBold
-    underline = hc.isUnderline
-    strikethrough = hc.isStrikeOut
-    italic = hc.isItalic
+    _style = hc.toSStyle()
     if let ac = hc.color {
       color = Color(r: ac.r, g: ac.g, b: ac.b,
           a: ac.a != nil ? ac.a! : 255)
