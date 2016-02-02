@@ -181,9 +181,11 @@ public class Span: Element {
     if w <= 0 || contentHeight <= 0 {
       return
     }
-    var ap = S.textGrid.withColor(borderColor,
-        backgroundColor: borderBackgroundColor) { () -> Point in
-      return self.drawBorder(x, y: y, size: size)
+    var ap = S.textGrid.withStyle(_borderStyle) { () -> Point in
+      return S.textGrid.withColor(borderColor,
+          backgroundColor: borderBackgroundColor) { () -> Point in
+        return self.drawBorder(x, y: y, size: size)
+      }
     }
     var availableWidth = w - size.childrenWidth
     drawBackground(ap.x, y: ap.y, width: w, height: contentHeight,

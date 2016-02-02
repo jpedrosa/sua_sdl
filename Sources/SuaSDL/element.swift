@@ -200,6 +200,7 @@ extension Element {
         let (hc, _) = try Hexacoral.parseHexacoral(a, startIndex: 1,
             maxBytes: a.count)
         if let ahc = hc {
+          _borderStyle = ahc.toSStyle()
           if let ac = ahc.color {
             borderColor = Color(r: ac.r, g: ac.g, b: ac.b,
                 a: ac.a != nil ? ac.a! : 255)

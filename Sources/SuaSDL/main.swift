@@ -129,6 +129,7 @@ try S.start() { div in
     span.borderLeft = true
     span.borderRight = true
     span.expandHeight = true
+    span.borderHexacoral = "%bsu#="
   }
   try div.span("zinho")
 }
