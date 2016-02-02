@@ -20,6 +20,18 @@ public struct Hexacoral {
   public static let ITALIC        = 8
   public static let STRIKEOUT     = 16
 
+  func checkStyle(bit: Int) -> Bool {
+    return (style & bit) > 0
+  }
+
+  public var isBold: Bool { return checkStyle(Hexacoral.BOLD) }
+
+  public var isUnderline: Bool { return checkStyle(Hexacoral.UNDERLINE) }
+
+  public var isItalic: Bool { return checkStyle(Hexacoral.ITALIC) }
+
+  public var isStrikeOut: Bool { return checkStyle(Hexacoral.STRIKEOUT) }
+
   public static func matchHexa(c: UInt8) -> Bool {
     return (c >= 97 && c <= 102) || (c >= 65 && c <= 70) ||
         (c >= 48 && c <= 57)

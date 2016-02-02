@@ -124,28 +124,40 @@ public class Text: Element {
     }
   }
 
+  func doSetStyleBit(bit: Int32, enabled: Bool) {
+    if enabled {
+      _style |= bit
+    } else {
+      _style &= ~bit
+    }
+  }
+
   public var bold: Bool {
-    get { return _style & S.BOLD > 0 }
-    set { _style |= S.BOLD }
+    get { return (_style & S.BOLD) > 0 }
+    set { doSetStyleBit(S.BOLD, enabled: newValue) }
   }
 
   public var underline: Bool {
-    get { return _style & S.UNDERLINE > 0 }
-    set { _style |= S.UNDERLINE }
+    get { return (_style & S.UNDERLINE) > 0 }
+    set { doSetStyleBit(S.UNDERLINE, enabled: newValue) }
   }
 
   public var italic: Bool {
-    get { return _style & S.ITALIC > 0 }
-    set { _style |= S.ITALIC }
+    get { return (_style & S.ITALIC) > 0 }
+    set { doSetStyleBit(S.ITALIC, enabled: newValue) }
   }
 
   public var strikethrough: Bool {
-    get { return _style & S.STRIKETHROUGH > 0 }
-    set { _style |= S.STRIKETHROUGH }
+    get { return (_style & S.STRIKETHROUGH) > 0 }
+    set { doSetStyleBit(S.STRIKETHROUGH, enabled: newValue) }
   }
 
   public func updateFromHexacoral(hc: Hexacoral) {
-    _style = Int32(hc.style)
+    _style = 0
+    bold = hc.isBold
+    underline = hc.isUnderline
+    strikethrough = hc.isStrikeOut
+    italic = hc.isItalic
     if let ac = hc.color {
       color = Color(r: ac.r, g: ac.g, b: ac.b,
           a: ac.a != nil ? ac.a! : 255)
@@ -164,7 +176,7 @@ public class Text: Element {
     get { return _text }
     set {
       var s = newValue
-      if !s.isEmpty && s.utf16.codeUnitAt(0) == 35 { // %
+      if !s.isEmpty && s.utf16.codeUnitAt(0) == 37 { // %
         do {
           let a = s.bytes
           let len = a.count

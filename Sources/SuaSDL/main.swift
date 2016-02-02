@@ -60,7 +60,7 @@ try S.start() { div in
     span.expandWidth = true
   }
   var space = Text()
-  space.text = "Space"
+  space.text = "%b#fff,00f=Space"
   space.expandWidth = true
   try div.span(space, "Customers") { span in
     span.borderTop = true
