@@ -14,20 +14,7 @@ public enum SError: ErrorType {
 }
 
 
-public struct Color: CustomStringConvertible {
-
-  public var _color: SDL_Color
-
-  public init(r: Int, g: Int, b: Int, a: Int) {
-    _color = SDL_Color(r: UInt8(r), g: UInt8(g), b: UInt8(b), a: UInt8(a))
-  }
-
-  public var description: String {
-    return "Color(r: \(_color.r), g: \(_color.g), b: \(_color.b), " +
-        "a: \(_color.a))"
-  }
-
-}
+public typealias Color = SDL_Color
 
 
 // S stands for Simple, the first name of the SDL acronym.
@@ -411,8 +398,8 @@ public class TextGrid {
     if color == nil && backgroundColor == nil {
       return fn()
     } else {
-      let c = color?._color
-      let bg = backgroundColor?._color
+      let c = color
+      let bg = backgroundColor
       colorStack.append(fontColor)
       colorStack.append(self.backgroundColor)
       defer {
