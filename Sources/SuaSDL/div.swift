@@ -128,7 +128,10 @@ public class Div: Element {
     if w <= 0 || contentHeight <= 0 {
       return
     }
-    var ap = drawBorder(x, y: y, size: size)
+    var ap = S.textGrid.withColor(borderColor,
+        backgroundColor: borderBackgroundColor) { () -> Point in
+      return self.drawBorder(x, y: y, size: size)
+    }
     drawBackground(ap.x, y: ap.y, width: w, height: contentHeight,
         strings: backgroundStrings)
 

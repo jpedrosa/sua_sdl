@@ -96,7 +96,7 @@ try S.start() { div in
     span.borderLeft = true
     span.borderRight = true
     span.expandWidth = true
-    span.borderHexacoral = "sdsd"
+    span.borderHexacoral = "%#8B4513,E5E5E5="
   }
   try div.span("Leo")
   try div.span("[=Goodness=]") { span in
