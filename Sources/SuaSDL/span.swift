@@ -34,6 +34,8 @@ public class Span: Element {
   public var expandParentWidth = false
   public var expandParentHeight = false
   public var backgroundStrings = [" "]
+  public var borderBackgroundColor: Color?
+  public var borderColor: Color?
   public var align = TextAlign.Left
   public var verticalAlign = VerticalAlign.Top
   public var lastx = 0

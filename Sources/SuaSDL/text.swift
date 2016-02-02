@@ -201,4 +201,27 @@ public class Text: Element {
     }
   }
 
+  public var hexacoral: String {
+    get { return "%#=" }
+    set {
+      _style = 0
+      color = nil
+      backgroundColor = nil
+      do {
+        let a = newValue.bytes
+        let (hc, _) = try Hexacoral.parseHexacoral(a, startIndex: 1,
+            maxBytes: a.count)
+        if let ahc = hc {
+          updateFromHexacoral(ahc)
+        } else { // Show text in bold red to indicate error.
+          bold = true
+          color = Color.red
+        }
+      } catch {
+        bold = true // Show text in bold red to indicate error.
+        color = Color.red
+      }
+    }
+  }
+
 }

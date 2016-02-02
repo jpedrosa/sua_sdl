@@ -17,6 +17,13 @@ public enum SError: ErrorType {
 public typealias Color = SDL_Color
 
 
+extension Color {
+
+  public static let red = Color(r: 255, g: 0, b: 0, a: 255)
+  
+}
+
+
 // S stands for Simple, the first name of the SDL acronym.
 // Rather than to have the SDL name repeated for our own custom classes, we
 // have opted to just use the S prefix instead.

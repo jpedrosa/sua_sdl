@@ -18,6 +18,8 @@ public protocol Element {
   var expandParentWidth: Bool { get set }
   var expandParentHeight: Bool { get set }
   var backgroundStrings: [String] { get set }
+  var borderBackgroundColor: Color? { get set }
+  var borderColor: Color? { get set }
   var lastx: Int { get set }
   var lasty: Int { get set }
   var lastSize: TellSize { get set }
@@ -184,6 +186,34 @@ extension Element {
   public func matchPoint(x: Int, y: Int) -> Bool {
     return x >= lastx && x <= lastx + lastSize.width - 1 && y >= lasty &&
         y <= lasty + lastSize.height - 1
+  }
+
+  public var borderHexacoral: String {
+    get { return "%#=" }
+    set {
+      borderColor = nil
+      borderBackgroundColor = nil
+      do {
+        let a = newValue.bytes
+        let (hc, _) = try Hexacoral.parseHexacoral(a, startIndex: 1,
+            maxBytes: a.count)
+        if let ahc = hc {
+          if let ac = ahc.color {
+            borderColor = Color(r: ac.r, g: ac.g, b: ac.b,
+                a: ac.a != nil ? ac.a! : 255)
+          }
+          if let ac = ahc.backgroundColor {
+            borderBackgroundColor = Color(r: ac.r, g: ac.g, b: ac.b,
+                a: ac.a != nil ? ac.a! : 255)
+          }
+          return
+        }
+      } catch {
+        // Ignore.
+      }
+      // Show border in red to indicate error.
+      borderColor = Color.red
+    }
   }
 
 }

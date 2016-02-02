@@ -46,6 +46,7 @@ try S.start() { div in
   var tryMsg = Text()
   tryMsg.text = "Try and you might get it."
   tryMsg.borderTop = true
+  tryMsg.hexacoral = "%b#="
   spanClip.add(tryMsg)
   spanClip.maxWidth = 10
   spanClip.add("[For realz!]")
@@ -95,6 +96,7 @@ try S.start() { div in
     span.borderLeft = true
     span.borderRight = true
     span.expandWidth = true
+    span.borderHexacoral = "sdsd"
   }
   try div.span("Leo")
   try div.span("[=Goodness=]") { span in
