@@ -254,6 +254,9 @@ public class Span: Element {
             contentHeight - s.height
         s.element!.draw(ap.x, y: ap.y + yo, size: candidateSize)
       } else {
+        if s.height > contentHeight {
+          candidateSize.height = contentHeight
+        }
         s.element!.draw(ap.x, y: ap.y, size: candidateSize)
       }
       w -= s.width
