@@ -20,9 +20,9 @@ directory. In effect "inlining" them.
 
 The current snapshot from Sua is this one:
 
-    commit b57471f3911d04d406a3fff3a300c05c2f559e68
+    commit df0d1bc2bffa29e07de12b724be46739990744ec
     [...]
-    Date:   Thu Jan 28 11:54:46 2016 -0300
+    Date:   Tue Feb 2 23:28:46 2016 -0300
 
 There is also a dependency on the
 [CSDL module](https://github.com/jpedrosa/csdl_module) sister project.

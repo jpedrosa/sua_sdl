@@ -61,7 +61,7 @@ public class Span: Element {
       if v is String {
         let vs = (v as! String)
         do {
-          for (s, hc) in try Hexastyle.parseText(vs.bytes) {
+          for (s, hc) in try Hexastyle.parseText(vs) {
             let t = Text()
             if let ahc = hc {
               t.updateFromHexastyle(ahc)
