@@ -180,8 +180,8 @@ public class Span: Element {
     lastx = x
     lasty = y
     lastSize = size
-    var w = size.width - size.borderLeft - size.borderRight
-    let contentHeight = size.height - size.borderTop - size.borderBottom
+    var w = size.contentWidth
+    let contentHeight = size.contentHeight
     if w <= 0 || contentHeight <= 0 {
       return
     }

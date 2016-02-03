@@ -130,8 +130,8 @@ public class Div: Element {
     lastx = x
     lasty = y
     lastSize = size
-    let w = size.width - size.borderLeft - size.borderRight
-    var contentHeight = size.height - size.borderTop - size.borderBottom
+    let w = size.contentWidth
+    var contentHeight = size.contentHeight
     if w <= 0 || contentHeight <= 0 {
       return
     }

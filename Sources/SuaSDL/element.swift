@@ -185,8 +185,9 @@ extension Element {
   }
 
   public func matchPoint(x: Int, y: Int) -> Bool {
-    return x >= lastx && x <= lastx + lastSize.width - 1 && y >= lasty &&
-        y <= lasty + lastSize.height - 1
+    return x >= lastx &&  x <= lastx + lastSize.width - 1 && y >= lasty &&
+        y <= lasty + lastSize.height - 1 &&
+        lastSize.contentWidth > 0 && lastSize.contentHeight > 0
   }
 
   public var borderStyle: String {

@@ -44,5 +44,13 @@ public struct TellSize {
   public var borderBottom = 0
   public var borderLeft = 0
 
+  public var contentWidth: Int {
+    return width - borderLeft - borderRight
+  }
+
+  public var contentHeight: Int {
+    return height - borderTop - borderBottom
+  }
+
   public static let EMPTY = TellSize()
 }

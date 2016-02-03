@@ -95,8 +95,8 @@ public class Text: Element {
     lastx = x
     lasty = y
     lastSize = size
-    let w = size.width - size.borderLeft - size.borderRight
-    let contentHeight = size.height - size.borderTop - size.borderBottom
+    let w = size.contentWidth
+    let contentHeight = size.contentHeight
     if w <= 0 || contentHeight <= 0 {
       return
     }
