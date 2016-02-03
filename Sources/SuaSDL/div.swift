@@ -1,4 +1,6 @@
 
+import _Sua
+
 
 public class Div: Element {
   public var type = SType.Div
@@ -103,13 +105,17 @@ public class Div: Element {
     }
     t.expandWidth = expandWidth
     t.expandHeight = expandHeight
-    if expandParentWidth {
+    if t.expandParentWidth {
       t.expandParentWidth = true
       t.expandWidth = true
+    } else if expandParentWidth {
+      t.expandParentWidth = true
     }
-    if expandParentHeight {
+    if t.expandParentHeight {
       t.expandParentHeight = true
       t.expandHeight = true
+    } else if expandParentHeight {
+      t.expandParentHeight = true
     }
     if t.expandWidth {
       t.expandMaxWidth = maxWidth
@@ -187,7 +193,10 @@ public class Div: Element {
       if s.height > contentHeight {
         candidateSize.height = contentHeight
       }
-      if s.expandWidth || s.width > w {
+      if s.expandWidth {
+        let mw = s.expandMaxWidth
+        candidateSize.width = mw >= 0 ? min(w, mw) : w
+      } else if s.width > w {
         candidateSize.width = w
       }
       s.element!.draw(ap.x, y: ap.y, size: candidateSize)

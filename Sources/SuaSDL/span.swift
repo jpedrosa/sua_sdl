@@ -155,13 +155,17 @@ public class Span: Element {
     }
     t.expandWidth = expandWidth
     t.expandHeight = expandHeight
-    if expandParentWidth {
+    if t.expandParentWidth {
       t.expandParentWidth = true
       t.expandWidth = true
+    } else if expandParentWidth {
+      t.expandParentWidth = true
     }
-    if expandParentHeight {
+    if t.expandParentHeight {
       t.expandParentHeight = true
       t.expandHeight = true
+    } else if expandParentHeight {
+      t.expandParentHeight = true
     }
     if t.expandWidth {
       t.expandMaxWidth = maxWidth
