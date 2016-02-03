@@ -19,6 +19,10 @@ public typealias Color = SDL_Color
 
 extension Color {
 
+  public func toHexa() -> String {
+    return "FFF"
+  }
+
   public static let red = Color(r: 255, g: 0, b: 0, a: 255)
 
 }
@@ -302,19 +306,19 @@ public class TextGrid {
 
   public var x = 0
   public var y = 0
-  public var fontColor = SDL_Color(r: 0, g: 0, b: 0, a: 255)
+  public var fontColor = Color(r: 0, g: 0, b: 0, a: 255)
   public var font: COpaquePointer
   public var cellWidth: Int32 = 0
   public var cellHeight: Int32 = 0
   public var renderer: COpaquePointer
-  public var backgroundColor: SDL_Color? = nil
+  public var backgroundColor: Color? = nil
   public let padding: Int32 = 1
   public let doublePadding: Int32 = 2
   public var width = 0             // Max number of horizontal cells.
   public var height = 0            // Max number of vertical cells.
   public var cache = [String: TextureCacheValue]()
   public var descent: Int32 = 0
-  public var colorStack = [SDL_Color?]()
+  public var colorStack = [Color?]()
   public var styleStack = [Int32]()
   public var style: Int32 = 0
 
@@ -323,7 +327,7 @@ public class TextGrid {
     self.font = font
     cellHeight = TTF_FontHeight(font)
     TTF_GlyphMetrics(font, 65, nil, nil, nil, nil, &cellWidth)
-    backgroundColor = SDL_Color(r: 255, g: 255, b: 255, a: 255)
+    backgroundColor = Color(r: 255, g: 255, b: 255, a: 255)
     descent = TTF_FontDescent(font)
     // var some = 0
     // TTF_SetFontStyle(font, some) //TTF_STYLE_BOLD | TTF_STYLE_UNDERLINE | TTF_STYLE_STRIKETHROUGH | TTF_STYLE_ITALIC)

@@ -199,7 +199,28 @@ public class Text: Element {
   }
 
   public var style: String {
-    get { return "%#=" }
+    get {
+      var s = "%"
+      if bold { s += "b" }
+      if underline { s += "u" }
+      if strikethrough { s += "s" }
+      if italic { s += "i" }
+      s += "#"
+      var gotColor = false
+      if let ac = color {
+        s += ac.toHexa()
+        gotColor = true
+      }
+      if let ac = backgroundColor {
+        if !gotColor {
+          s += S.textGrid.fontColor.toHexa()
+        }
+        s += ","
+        s += ac.toHexa()
+      }
+      s += "="
+      return s
+    }
     set {
       _style = 0
       color = nil
