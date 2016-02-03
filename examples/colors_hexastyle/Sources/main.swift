@@ -3,6 +3,7 @@ import Glibc
 import CSua
 import CSDL
 import _Sua
+import SuaSDL
 
 
 try S.start() { div in
