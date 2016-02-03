@@ -62,6 +62,7 @@ try S.start() { div in
   }
   var space = Text()
   space.text = "%b#fff,00f=Space"
+  p("space mars and back \(inspect(space.style))")
   space.expandWidth = true
   try div.span(space, "Customers") { span in
     span.borderTop = true

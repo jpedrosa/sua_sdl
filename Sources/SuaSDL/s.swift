@@ -20,7 +20,24 @@ public typealias Color = SDL_Color
 extension Color {
 
   public func toHexa() -> String {
-    return "FFF"
+    func check(s: String) -> Bool {
+      let c = s.utf16.codeUnitAt(0)
+      return c == 48 || c == s.utf16.codeUnitAt(1)
+    }
+    func subs(s: String) -> String {
+      if let z = s.utf16.substring(1, endIndex: 2) {
+        return z
+      }
+      return "0"
+    }
+    let rs = HexaUtils.hexaToString(r, pad: true)
+    let gs = HexaUtils.hexaToString(g, pad: true)
+    let bs = HexaUtils.hexaToString(b, pad: true)
+    let _a = HexaUtils.hexaToString(a, pad: true)
+    if check(rs) && check(gs) && check(bs) && check(_a) {
+      return subs(rs) + subs(gs) + subs(bs) + subs(_a)
+    }
+    return rs + gs + bs + _a
   }
 
   public static let red = Color(r: 255, g: 0, b: 0, a: 255)
@@ -246,6 +263,7 @@ public class SImpl {
               if let e = a.last {
                 if e.type == .Text {
                   p("Simon says: \((e as! Text).text)")
+                  p("Hexastyle: \((e as! Text).style)")
                 }
               }
             }
@@ -418,6 +436,8 @@ public class TextGrid {
 
   public func pointToCell(x: Int32, y: Int32) -> CellPoint? {
     p("pointToCell \(x) \(y)")
+    p(fontColor.toHexa())
+    p(fontColor)
     if x >= padding && x <= (cellWidth * Int32(width)) + padding &&
         y >= padding && y <= (cellHeight * Int32(height)) + padding {
       return CellPoint(x: Int((x - padding) / cellWidth),
