@@ -98,7 +98,7 @@ try S.start() { div in
     span.borderLeft = true
     span.borderRight = true
     span.expandWidth = true
-    span.borderHexastyle = "%#8B4513,E5E5E5="
+    span.borderStyle = "%#8B4513,E5E5E5="
   }
   try div.span("Leo")
   try div.span("[=Goodness=]") { span in
@@ -131,7 +131,7 @@ try S.start() { div in
     span.borderLeft = true
     span.borderRight = true
     span.expandHeight = true
-    span.borderHexastyle = "%bsu#="
+    span.borderStyle = "%bsu#="
   }
   try div.span("zinho")
 }

@@ -189,7 +189,7 @@ extension Element {
         y <= lasty + lastSize.height - 1
   }
 
-  public var borderHexastyle: String {
+  public var borderStyle: String {
     get { return "%#=" }
     set {
       borderColor = nil
