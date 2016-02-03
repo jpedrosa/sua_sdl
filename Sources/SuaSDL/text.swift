@@ -153,7 +153,7 @@ public class Text: Element {
     set { doSetStyleBit(S.STRIKETHROUGH, enabled: newValue) }
   }
 
-  public func updateFromHexacoral(hc: Hexacoral) {
+  public func updateFromHexastyle(hc: Hexastyle) {
     _style = hc.toSStyle()
     if let ac = hc.color {
       color = Color(r: ac.r, g: ac.g, b: ac.b,
@@ -177,10 +177,10 @@ public class Text: Element {
         do {
           let a = s.bytes
           let len = a.count
-          let (hc, advi) = try Hexacoral.parseHexacoral(a, startIndex: 1,
+          let (hc, advi) = try Hexastyle.parseHexastyle(a, startIndex: 1,
               maxBytes: len)
           if let ahc = hc {
-            updateFromHexacoral(ahc)
+            updateFromHexastyle(ahc)
             let i = advi + 1
             if i < len {
               if let z = String.fromCharCodes(a, start: i, end: len - 1) {
@@ -198,7 +198,7 @@ public class Text: Element {
     }
   }
 
-  public var hexacoral: String {
+  public var style: String {
     get { return "%#=" }
     set {
       _style = 0
@@ -206,10 +206,10 @@ public class Text: Element {
       backgroundColor = nil
       do {
         let a = newValue.bytes
-        let (hc, _) = try Hexacoral.parseHexacoral(a, startIndex: 1,
+        let (hc, _) = try Hexastyle.parseHexastyle(a, startIndex: 1,
             maxBytes: a.count)
         if let ahc = hc {
-          updateFromHexacoral(ahc)
+          updateFromHexastyle(ahc)
         } else { // Show text in bold red to indicate error.
           bold = true
           color = Color.red

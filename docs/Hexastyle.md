@@ -1,7 +1,7 @@
-Hexacoral
+Hexastyle
 ---------
 
-Hexacoral is a new encoding format for both style and color that can be embedded
+Hexastyle is a new encoding format for both style and color that can be embedded
 in ordinary text.
 
 The chosen format is this one:
@@ -30,7 +30,7 @@ text.
 
 The rule also says that if the code cannot be understood, the entire code will
 be shown in plain text. This way it could help with debugging it or even in case
-the code was not actually an Hexacoral code to begin with, but just happened to
+the code was not actually an Hexastyle code to begin with, but just happened to
 have about the same characters.
 
 Following the hash character (#) we have the hexadecimal colors, which are based
@@ -70,19 +70,19 @@ E.g.
     %#FFF,00F=            // White text on blue background.
                           // Same as %#FFFFFF,0000FF=
 
-  * Finally, the empty hexacoral code helps to reset it by removing all of the
+  * Finally, the empty Hexastyle code helps to reset it by removing all of the
 styles and colors set beforehand.
 
 E.g.
 
     %#=                   // This resets the styles and colors; back to default.
 
-Hexacoral codes are only valid up to the next hexacoral code. So in effect the
-next hexacoral code resets the one before it. It also gives more of a WYSIWYG
-feel to it as you can be sure that the latest hexacoral code is the only set of
+Hexastyle codes are only valid up to the next Hexastyle code. So in effect the
+next Hexastyle code resets the one before it. It also gives more of a WYSIWYG
+feel to it as you can be sure that the latest Hexastyle code is the only set of
 styles and colors that are present for the text following it. While this can
 make it a bit more work when you do want a previous code to carry through other
-codes, given the conciseness with which the hexacoral code can encode a
+codes, given the conciseness with which the Hexastyle code can encode a
 multitude of styles and colors, you could just repeat the setting for the next
 one until you were done with it.
 
@@ -104,5 +104,5 @@ there is always the chance that the format could naturally occur in some text
 somewhere and that could cause some confusion -- it should be a small chance
 though.
 
-These hexacoral codes could be used in some chatting program somewhere, say on
+These Hexastyle codes could be used in some chatting program somewhere, say on
 Twitch bots or some such.

@@ -61,10 +61,10 @@ public class Span: Element {
       if v is String {
         let vs = (v as! String)
         do {
-          for (s, hc) in try Hexacoral.parseText(vs.bytes) {
+          for (s, hc) in try Hexastyle.parseText(vs.bytes) {
             let t = Text()
             if let ahc = hc {
-              t.updateFromHexacoral(ahc)
+              t.updateFromHexastyle(ahc)
             }
             t._text = s
             children.append(t)

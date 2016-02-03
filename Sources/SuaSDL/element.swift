@@ -189,7 +189,7 @@ extension Element {
         y <= lasty + lastSize.height - 1
   }
 
-  public var borderHexacoral: String {
+  public var borderHexastyle: String {
     get { return "%#=" }
     set {
       borderColor = nil
@@ -197,7 +197,7 @@ extension Element {
       _borderStyle = 0
       do {
         let a = newValue.bytes
-        let (hc, _) = try Hexacoral.parseHexacoral(a, startIndex: 1,
+        let (hc, _) = try Hexastyle.parseHexastyle(a, startIndex: 1,
             maxBytes: a.count)
         if let ahc = hc {
           _borderStyle = ahc.toSStyle()

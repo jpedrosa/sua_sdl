@@ -10,7 +10,7 @@ public struct RGBAColor {
 }
 
 
-public struct Hexacoral {
+public struct Hexastyle {
   public var style = 0
   public var color: RGBAColor?
   public var backgroundColor: RGBAColor?
@@ -24,13 +24,13 @@ public struct Hexacoral {
     return (style & bit) > 0
   }
 
-  public var isBold: Bool { return checkStyle(Hexacoral.BOLD) }
+  public var isBold: Bool { return checkStyle(Hexastyle.BOLD) }
 
-  public var isUnderline: Bool { return checkStyle(Hexacoral.UNDERLINE) }
+  public var isUnderline: Bool { return checkStyle(Hexastyle.UNDERLINE) }
 
-  public var isItalic: Bool { return checkStyle(Hexacoral.ITALIC) }
+  public var isItalic: Bool { return checkStyle(Hexastyle.ITALIC) }
 
-  public var isStrikeOut: Bool { return checkStyle(Hexacoral.STRIKEOUT) }
+  public var isStrikeOut: Bool { return checkStyle(Hexastyle.STRIKEOUT) }
 
   public static func matchHexa(c: UInt8) -> Bool {
     return (c >= 97 && c <= 102) || (c >= 65 && c <= 70) ||
@@ -98,11 +98,11 @@ public struct Hexacoral {
   }
 
   // Starts from %^b#=. It starts past the percent character.
-  public static func parseHexacoral(bytes: [UInt8], startIndex: Int,
-      maxBytes: Int) throws -> (Hexacoral?, Int) {
+  public static func parseHexastyle(bytes: [UInt8], startIndex: Int,
+      maxBytes: Int) throws -> (Hexastyle?, Int) {
     var i = startIndex
     var style = 0
-    func parseColor() throws -> Hexacoral? {
+    func parseColor() throws -> Hexastyle? {
       let (maybeColor, advi) = try parseHexaSequence(bytes, startIndex: i,
           maxBytes: maxBytes)
       i = advi
@@ -116,7 +116,7 @@ public struct Hexacoral {
             i = advi
             if let bgColor = maybeBgColor {
               if bytes[i] == 61 { // =
-                return Hexacoral(style: style, color: color,
+                return Hexastyle(style: style, color: color,
                     backgroundColor: bgColor)
               } else { // ,
                 // Ignore.
@@ -127,9 +127,9 @@ public struct Hexacoral {
             }
           }
         } else if c == 61 { // =
-          return Hexacoral(style: style, color: color, backgroundColor: nil)
+          return Hexastyle(style: style, color: color, backgroundColor: nil)
         } else {
-          throw HexacoralError.Unreachable
+          throw HexastyleError.Unreachable
         }
       }
       return nil
@@ -137,7 +137,7 @@ public struct Hexacoral {
     if bytes[i] == 35 { // #
       i += 1
       if bytes[i] == 61 { // =
-        return (Hexacoral(style:0, color: nil, backgroundColor: nil), i)
+        return (Hexastyle(style:0, color: nil, backgroundColor: nil), i)
       } else {
         return (try parseColor(), i)
       }
@@ -145,30 +145,30 @@ public struct Hexacoral {
       STYLE: repeat {
         switch bytes[i] {
           case 98: // b
-            if style & Hexacoral.BOLD > 0 {
+            if style & Hexastyle.BOLD > 0 {
               break STYLE
             }
-            style |= Hexacoral.BOLD
+            style |= Hexastyle.BOLD
           case 117: // u
-            if style & Hexacoral.UNDERLINE > 0 {
+            if style & Hexastyle.UNDERLINE > 0 {
               break STYLE
             }
-            style |= Hexacoral.UNDERLINE
+            style |= Hexastyle.UNDERLINE
           case 115: // s
-            if style & Hexacoral.STRIKEOUT > 0 {
+            if style & Hexastyle.STRIKEOUT > 0 {
               break STYLE
             }
-            style |= Hexacoral.STRIKEOUT
+            style |= Hexastyle.STRIKEOUT
           case 105: // i
-            if style & Hexacoral.ITALIC > 0 {
+            if style & Hexastyle.ITALIC > 0 {
               break STYLE
             }
-            style |= Hexacoral.ITALIC
+            style |= Hexastyle.ITALIC
           case 35: // #
             i += 1
             if i < maxBytes {
               if bytes[i] == 61 { // =
-                return (Hexacoral(style: style, color: nil,
+                return (Hexastyle(style: style, color: nil,
                     backgroundColor: nil), i)
               } else {
                 return (try parseColor(), i)
@@ -184,23 +184,23 @@ public struct Hexacoral {
   }
 
   public static func parseText(bytes: [UInt8]) throws
-      -> [(String, Hexacoral?)] {
+      -> [(String, Hexastyle?)] {
     var tokenIndex = 0
     let len = bytes.count
-    var list = [(String, Hexacoral?)]()
+    var list = [(String, Hexastyle?)]()
     var i = 0
     let vlen = len - 2
-    var hexac: Hexacoral?
+    var hexac: Hexastyle?
     func collect(ei: Int) throws {
       if let z = String.fromCharCodes(bytes, start: tokenIndex, end: ei) {
         list.append((z, hexac))
       } else {
-        throw HexacoralError.Unicode
+        throw HexastyleError.Unicode
       }
     }
     while i < vlen {
       if bytes[i] == 37 { // %
-        let (hc, advi) = try parseHexacoral(bytes, startIndex: i + 1,
+        let (hc, advi) = try parseHexastyle(bytes, startIndex: i + 1,
             maxBytes: len)
         if let _ = hc {
           if i - 1 >= tokenIndex {
@@ -221,7 +221,7 @@ public struct Hexacoral {
 
 }
 
-public enum HexacoralError: ErrorType {
+public enum HexastyleError: ErrorType {
   case Parse
   case Unicode
   case Unreachable

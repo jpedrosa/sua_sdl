@@ -24,7 +24,7 @@ extension Color {
 }
 
 
-extension Hexacoral {
+extension Hexastyle {
 
   public func toSStyle() -> Int32 {
     var n: Int32 = 0

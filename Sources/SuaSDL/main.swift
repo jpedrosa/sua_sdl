@@ -10,7 +10,7 @@ try S.start() { div in
   S.mainDiv.borderRight = true
   S.mainDiv.borderBottom = true
   S.mainDiv.borderLeft = true
-  try div.span("%u#F00=Hexa%u#0F0=co%u#00F=ral")
+  try div.span("%u#F00=Hexa%u#0F0=st%u#00F=yle")
   try div.span("%#0F0,000=S%#8ef,000=u%#EE0,000=a")
   var o = Text()
   o.backgroundColor = Color(r: 255, g: 0, b: 0, a: 255)
@@ -46,7 +46,7 @@ try S.start() { div in
   var tryMsg = Text()
   tryMsg.text = "Try and you might get it."
   tryMsg.borderTop = true
-  tryMsg.hexacoral = "%b#="
+  tryMsg.style = "%b#="
   spanClip.add(tryMsg)
   spanClip.maxWidth = 10
   spanClip.add("[For realz!]")
@@ -96,7 +96,7 @@ try S.start() { div in
     span.borderLeft = true
     span.borderRight = true
     span.expandWidth = true
-    span.borderHexacoral = "%#8B4513,E5E5E5="
+    span.borderHexastyle = "%#8B4513,E5E5E5="
   }
   try div.span("Leo")
   try div.span("[=Goodness=]") { span in
@@ -129,7 +129,7 @@ try S.start() { div in
     span.borderLeft = true
     span.borderRight = true
     span.expandHeight = true
-    span.borderHexacoral = "%bsu#="
+    span.borderHexastyle = "%bsu#="
   }
   try div.span("zinho")
 }
