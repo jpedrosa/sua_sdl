@@ -331,7 +331,6 @@ public class TextGrid {
   public var renderer: COpaquePointer
   public var backgroundColor: Color? = nil
   public let padding: Int32 = 1
-  public let doublePadding: Int32 = 2
   public var width = 0             // Max number of horizontal cells.
   public var height = 0            // Max number of vertical cells.
   public var cache = [String: TextureCacheValue]()
@@ -430,8 +429,8 @@ public class TextGrid {
   }
 
   public func changeScreenSize(width: Int32, height: Int32) {
-    self.width = Int((width - doublePadding) / cellWidth)
-    self.height = Int((height - doublePadding) / cellHeight)
+    self.width = Int((width - padding) / cellWidth)
+    self.height = Int((height - padding) / cellHeight)
   }
 
   public func pointToCell(x: Int32, y: Int32) -> CellPoint? {
