@@ -30,6 +30,25 @@ public struct SEvent {
     }
   }
 
+  public var key: Int32 {
+    return sdlEvent.key.keysym.sym
+  }
+
+  public var isShiftKey: Bool {
+    let c = sdlEvent.key.keysym.mod
+    return (c & S.KMOD_LSHIFT > 0) || (c & S.KMOD_RSHIFT > 0)
+  }
+
+  public var isCtrlKey: Bool {
+    let c = sdlEvent.key.keysym.mod
+    return (c & S.KMOD_LCTRL > 0) || (c & S.KMOD_RCTRL > 0)
+  }
+
+  public var isAltKey: Bool {
+    let c = sdlEvent.key.keysym.mod
+    return (c & S.KMOD_LALT > 0) || (c & S.KMOD_RALT > 0)
+  }
+
   public mutating func preventDefault() {
     _preventDefault = true
   }
@@ -199,6 +218,18 @@ public class SImpl {
   public let UNDERLINE = TTF_STYLE_UNDERLINE
   public let ITALIC = TTF_STYLE_ITALIC
   public let STRIKETHROUGH = TTF_STYLE_STRIKETHROUGH
+
+  public let KMOD_LSHIFT: UInt16 = 1
+  public let KMOD_RSHIFT: UInt16 = 2
+  public let KMOD_LCTRL:  UInt16 = 64
+  public let KMOD_RCTRL:  UInt16 = 128
+  public let KMOD_LALT:   UInt16 = 256
+  public let KMOD_RALT:   UInt16 = 512
+  public let KMOD_LGUI:   UInt16 = 1024
+  public let KMOD_RGUI:   UInt16 = 2048
+  public let KMOD_NUM:    UInt16 = 4096
+  public let KMOD_CAPS:   UInt16 = 8192
+  public let KMOD_MODE:   UInt16 = 16384
 
   public var customEvents = [SEventType: CustomSEvent]()
   public var _textGrid: TextGrid?
