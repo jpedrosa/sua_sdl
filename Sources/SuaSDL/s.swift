@@ -15,8 +15,38 @@ public enum SError: ErrorType {
 
 
 public typealias Color = SDL_Color
-public typealias SEvent = SDL_Event
-public typealias SEventHandler = (ev: SEvent) -> Void
+
+
+public struct SEvent {
+
+  public let sdlEvent: SDL_Event
+  var _preventDefault: Bool
+  var _cancelPropagation: Bool
+
+  public func textAsString() -> String? {
+    var t = sdlEvent.text
+    return withUnsafePointer(&t.text) { ptr -> String? in
+      return String.fromCString(UnsafePointer<CChar>(ptr))
+    }
+  }
+
+  public mutating func preventDefault() {
+    _preventDefault = true
+  }
+
+  public mutating func cancelPropagation() {
+    _cancelPropagation = true
+  }
+
+  public static func new(ev: SDL_Event) -> SEvent {
+    return SEvent(sdlEvent: ev, _preventDefault: false,
+        _cancelPropagation: false)
+  }
+
+}
+
+
+public typealias SEventHandler = (inout ev: SEvent) -> Void
 
 
 struct SEventHandlerId {
@@ -25,20 +55,9 @@ struct SEventHandlerId {
 }
 
 
-extension SEvent {
-
-  public func textAsString() -> String? {
-    var t = text
-    return withUnsafePointer(&t.text) { ptr -> String? in
-      return String.fromCString(UnsafePointer<CChar>(ptr))
-    }
-  }
-
-}
-
-
 public enum SEventType {
   case TextInput
+  case Quit
 }
 
 
@@ -61,9 +80,9 @@ public class CustomSEvent {
     }
   }
 
-  public func signal(ev: SEvent) {
+  public func signal(inout ev: SEvent) {
     for af in items {
-      af.handler(ev: ev)
+      af.handler(ev: &ev)
     }
   }
 
@@ -339,10 +358,14 @@ public class SImpl {
             }
           }
         } else if ev.type == TEXTINPUT {
-          p("text input \(ev.textAsString())")
+          // p("text input \(ev.textAsString())")
           signal(.TextInput, ev: ev)
         } else if ev.type == QUIT {
-          done = true
+          if let se = signal(.Quit, ev: ev) {
+            if !se._preventDefault {
+              done = true
+            }
+          }
         }
       }
       if invalidated {
@@ -354,7 +377,7 @@ public class SImpl {
   }
 
   // Returns the id that can be used for removing the handler.
-  public func on(eventType: SEventType, fn: (ev: SEvent) -> Void) -> Int {
+  public func on(eventType: SEventType, fn: SEventHandler) -> Int {
     var a = customEvents[eventType]
     if a == nil {
       a = CustomSEvent()
@@ -364,12 +387,13 @@ public class SImpl {
     return id
   }
 
-  public func signal(eventType: SEventType, ev: SEvent) {
-    p("nope")
+  public func signal(eventType: SEventType, ev: SDL_Event) -> SEvent? {
     if let a = customEvents[eventType] {
-      p("ever")
-      a.signal(ev)
+      var se = SEvent.new(ev)
+      a.signal(&se)
+      return se
     }
+    return nil
   }
 
   var errorMessage: String {
