@@ -60,6 +60,10 @@ public enum SEventType {
   case Quit
   case KeyUp
   case KeyDown
+  case MouseMotion
+  case MouseButtonDown
+  case MouseButtonUp
+  case MouseWheel
 }
 
 
@@ -373,6 +377,14 @@ public class SImpl {
           signal(.KeyUp, ev: ev)
         } else if ev.type == KEY_DOWN {
           signal(.KeyDown, ev: ev)
+        } else if ev.type == MOUSEMOTION {
+          signal(.MouseMotion, ev: ev)
+        } else if ev.type == MOUSEBUTTONDOWN {
+          signal(.MouseButtonDown, ev: ev)
+        } else if ev.type == MOUSEBUTTONUP {
+          signal(.MouseButtonUp, ev: ev)
+        } else if ev.type == MOUSEWHEEL {
+          signal(.MouseWheel, ev: ev)
         }
       }
       if invalidated {
