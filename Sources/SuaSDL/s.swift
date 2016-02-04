@@ -176,6 +176,7 @@ public class SImpl {
   public let ITALIC = TTF_STYLE_ITALIC
   public let STRIKETHROUGH = TTF_STYLE_STRIKETHROUGH
 
+  public var customEvents = [SEventType: CustomSEvent]()
   public var _textGrid: TextGrid?
 
   public var textGrid: TextGrid {
@@ -339,6 +340,7 @@ public class SImpl {
           }
         } else if ev.type == TEXTINPUT {
           p("text input \(ev.textAsString())")
+          signal(.TextInput, ev: ev)
         } else if ev.type == QUIT {
           done = true
         }
@@ -351,8 +353,23 @@ public class SImpl {
     }
   }
 
-  public func on(eventType: SEventType, fn: (ev: SEvent) -> Void) {
+  // Returns the id that can be used for removing the handler.
+  public func on(eventType: SEventType, fn: (ev: SEvent) -> Void) -> Int {
+    var a = customEvents[eventType]
+    if a == nil {
+      a = CustomSEvent()
+    }
+    let id = a!.listen(fn)
+    customEvents[eventType] = a!
+    return id
+  }
 
+  public func signal(eventType: SEventType, ev: SEvent) {
+    p("nope")
+    if let a = customEvents[eventType] {
+      p("ever")
+      a.signal(ev)
+    }
   }
 
   var errorMessage: String {
