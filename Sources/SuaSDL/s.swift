@@ -58,6 +58,8 @@ struct SEventHandlerId {
 public enum SEventType {
   case TextInput
   case Quit
+  case KeyUp
+  case KeyDown
 }
 
 
@@ -162,11 +164,13 @@ public class SImpl {
   public let WINDOW_SHOWN: UInt32    = 4
   public let QUIT: UInt32            = 256
   public let WINDOWEVENT: UInt32     = 512
+  public let KEY_DOWN: UInt32        = 768
+  public let KEY_UP: UInt32          = 769
+  public let TEXTINPUT: UInt32       = 771
   public let MOUSEMOTION: UInt32     = 1024
   public let MOUSEBUTTONDOWN: UInt32 = 1025
   public let MOUSEBUTTONUP: UInt32   = 1026
   public let MOUSEWHEEL: UInt32      = 1027
-  public let TEXTINPUT: UInt32       = 771
 
   public let WINDOWEVENT_SHOWN: UInt8        = 1
   public let WINDOWEVENT_HIDDEN: UInt8       = 2
@@ -184,9 +188,6 @@ public class SImpl {
   public let WINDOWEVENT_CLOSE: UInt8        = 14
 
   public let WINDOW_RESIZABLE: UInt32 = 32
-
-  public let KEY_DOWN: UInt16 = 768
-  public let KEY_UP: UInt16   = 769
 
   public let RENDERER_ACCELERATED: UInt32 = 2
 
@@ -368,6 +369,10 @@ public class SImpl {
               done = true
             }
           }
+        } else if ev.type == KEY_UP {
+          signal(.KeyUp, ev: ev)
+        } else if ev.type == KEY_DOWN {
+          signal(.KeyDown, ev: ev)
         }
       }
       if invalidated {
