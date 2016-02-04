@@ -342,49 +342,51 @@ public class SImpl {
     while !done {
       while SDL_PollEvent(&ev) != 0 {
         invalidated = ev.type != MOUSEMOTION
-        if ev.type == WINDOWEVENT {
-          if ev.window.event == WINDOWEVENT_SIZE_CHANGED {
-            checkSizeChange()
-          }
-        } else if ev.type == MOUSEBUTTONDOWN {
-          p("mouse button down \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
-        } else if ev.type == MOUSEBUTTONUP {
-          p("mouse button up \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
-          p("mainDiv \(mainDiv.lastx) \(mainDiv.lasty) \(mainDiv.lastSize.width) \(mainDiv.lastSize.height)")
-          if let cp = textGrid.pointToCell(ev.button.x, y: ev.button.y) {
-            p("cellPoint \(cp)")
-            var a = [Element]()
-            if mainDiv.pointToList(cp.x, y: cp.y, list: &a) {
-              p("pointToList \(a)")
-              if let e = a.last {
-                if e.type == .Text {
-                  p("Simon says: \((e as! Text).text)")
-                  p("Hexastyle: \((e as! Text).style)")
+        switch ev.type {
+          case WINDOWEVENT:
+            if ev.window.event == WINDOWEVENT_SIZE_CHANGED {
+              checkSizeChange()
+            }
+          case MOUSEBUTTONDOWN:
+            p("mouse button down \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
+          case MOUSEBUTTONUP:
+            p("mouse button up \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
+            p("mainDiv \(mainDiv.lastx) \(mainDiv.lasty) \(mainDiv.lastSize.width) \(mainDiv.lastSize.height)")
+            if let cp = textGrid.pointToCell(ev.button.x, y: ev.button.y) {
+              p("cellPoint \(cp)")
+              var a = [Element]()
+              if mainDiv.pointToList(cp.x, y: cp.y, list: &a) {
+                p("pointToList \(a)")
+                if let e = a.last {
+                  if e.type == .Text {
+                    p("Simon says: \((e as! Text).text)")
+                    p("Hexastyle: \((e as! Text).style)")
+                  }
                 }
               }
             }
-          }
-        } else if ev.type == TEXTINPUT {
-          // p("text input \(ev.textAsString())")
-          signal(.TextInput, ev: ev)
-        } else if ev.type == QUIT {
-          if let se = signal(.Quit, ev: ev) {
-            if !se._preventDefault {
-              done = true
+          case TEXTINPUT:
+            // p("text input \(ev.textAsString())")
+            signal(.TextInput, ev: ev)
+          case QUIT:
+            if let se = signal(.Quit, ev: ev) {
+              if !se._preventDefault {
+                done = true
+              }
             }
-          }
-        } else if ev.type == KEY_UP {
-          signal(.KeyUp, ev: ev)
-        } else if ev.type == KEY_DOWN {
-          signal(.KeyDown, ev: ev)
-        } else if ev.type == MOUSEMOTION {
-          signal(.MouseMotion, ev: ev)
-        } else if ev.type == MOUSEBUTTONDOWN {
-          signal(.MouseButtonDown, ev: ev)
-        } else if ev.type == MOUSEBUTTONUP {
-          signal(.MouseButtonUp, ev: ev)
-        } else if ev.type == MOUSEWHEEL {
-          signal(.MouseWheel, ev: ev)
+          case KEY_UP:
+            signal(.KeyUp, ev: ev)
+          case KEY_DOWN:
+            signal(.KeyDown, ev: ev)
+          case MOUSEMOTION:
+            signal(.MouseMotion, ev: ev)
+          case MOUSEBUTTONDOWN:
+            signal(.MouseButtonDown, ev: ev)
+          case MOUSEBUTTONUP:
+            signal(.MouseButtonUp, ev: ev)
+          case MOUSEWHEEL:
+            signal(.MouseWheel, ev: ev)
+          default: ()
         }
       }
       if invalidated {
