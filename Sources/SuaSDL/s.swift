@@ -168,6 +168,8 @@ public class SImpl {
 
     //TTF_SetFontStyle(freeSans, TTF_STYLE_BOLD)
 
+    SDL_SetRenderDrawColor(rend, 255, 255, 255, 255)
+
     _textGrid = TextGrid(renderer: rend, font: freeSans)
 
     let redColor = SDL_Color(r: 255, g: 0, b: 0, a: 255)
@@ -216,7 +218,6 @@ public class SImpl {
     var lastHeight: Int32 = -1
 
     func doDraw() {
-      SDL_SetRenderDrawColor(rend, 255, 255, 255, 255)
       SDL_RenderClear(rend)
       mainDiv.mainDraw(0, y: 0, width: textGrid.width, height: textGrid.height)
       // drawAgain()
