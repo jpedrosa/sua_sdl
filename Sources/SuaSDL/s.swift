@@ -331,7 +331,9 @@ public class SImpl {
     mainDiv.expandHeight = true
 
     try fn()
-
+// SDL_StartTextInput()
+// var textRect = SDL_Rect(x: 10, y: 10, w: 100, h: 30)
+// SDL_SetTextInputRect(&textRect)
     while !done {
       while SDL_PollEvent(&ev) != 0 {
         invalidated = ev.type != MOUSEMOTION
