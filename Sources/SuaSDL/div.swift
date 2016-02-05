@@ -26,6 +26,7 @@ public class Div: Element {
   public var lastx = 0
   public var lasty = 0
   public var lastSize = TellSize.EMPTY
+  public var eventStore: EventStore?
 
 
   public init() { }

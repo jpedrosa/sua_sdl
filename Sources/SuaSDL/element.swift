@@ -24,6 +24,7 @@ public protocol Element {
   var lastx: Int { get set }
   var lasty: Int { get set }
   var lastSize: TellSize { get set }
+  var eventStore: EventStore? { get }
 
 
   func tellSize() -> TellSize

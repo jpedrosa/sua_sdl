@@ -135,6 +135,38 @@ public class CustomSEvent {
 }
 
 
+public class EventStore {
+
+  public var customEvents = [SEventType: CustomSEvent]()
+
+  public subscript(eventType: SEventType) -> CustomSEvent? {
+    get { return customEvents[eventType] }
+    set { customEvents[eventType] = newValue }
+  }
+
+  // Returns the id that can be used for removing the handler.
+  public func on(eventType: SEventType, fn: SEventHandler) -> Int {
+    var a = customEvents[eventType]
+    if a == nil {
+      a = CustomSEvent()
+    }
+    let id = a!.listen(fn)
+    customEvents[eventType] = a!
+    return id
+  }
+
+  public func signal(eventType: SEventType, ev: SDL_Event) -> SEvent? {
+    if let a = customEvents[eventType] {
+      var se = SEvent.new(ev)
+      a.signal(&se)
+      return se
+    }
+    return nil
+  }
+
+}
+
+
 extension Color {
 
   public func toHexa() -> String {
@@ -237,7 +269,7 @@ public class SImpl {
   public let KMOD_CAPS:   UInt16 = 8192
   public let KMOD_MODE:   UInt16 = 16384
 
-  public var customEvents = [SEventType: CustomSEvent]()
+  public var eventStore = EventStore()
   public var _textGrid: TextGrid?
 
   public var textGrid: TextGrid {
@@ -455,22 +487,11 @@ public class SImpl {
 
   // Returns the id that can be used for removing the handler.
   public func on(eventType: SEventType, fn: SEventHandler) -> Int {
-    var a = customEvents[eventType]
-    if a == nil {
-      a = CustomSEvent()
-    }
-    let id = a!.listen(fn)
-    customEvents[eventType] = a!
-    return id
+    return eventStore.on(eventType, fn: fn)
   }
 
   public func signal(eventType: SEventType, ev: SDL_Event) -> SEvent? {
-    if let a = customEvents[eventType] {
-      var se = SEvent.new(ev)
-      a.signal(&se)
-      return se
-    }
-    return nil
+    return eventStore.signal(eventType, ev: ev)
   }
 
   var errorMessage: String {
