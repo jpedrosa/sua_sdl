@@ -39,7 +39,7 @@ public protocol Element {
 
   mutating func on(eventType: SEventType, fn: SEventHandler) -> Int
 
-  func signal(eventType: SEventType, ev: SDL_Event) -> SEvent?
+  func signal(eventType: SEventType, inout ev: SEvent)
 
   func hasListenerFor(eventType: SEventType) -> Bool
 
@@ -236,11 +236,10 @@ extension Element {
     return eventStore!.on(eventType, fn: fn)
   }
 
-  public func signal(eventType: SEventType, ev: SDL_Event) -> SEvent? {
+  public func signal(eventType: SEventType, inout ev: SEvent) {
     if let es = eventStore {
-      return es.signal(eventType, ev: ev)
+      es.signal(eventType, ev: &ev)
     }
-    return nil
   }
 
   public func hasListenerFor(eventType: SEventType) -> Bool {
