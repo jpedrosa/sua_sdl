@@ -21,7 +21,8 @@ public struct SEvent {
 
   public let sdlEvent: SDL_Event
   var _preventDefault: Bool
-  var _cancelPropagation: Bool
+  var _stopPropagation: Bool
+  var _stopImmediatePropagation: Bool
 
   public func textAsString() -> String? {
     var t = sdlEvent.text
@@ -53,13 +54,17 @@ public struct SEvent {
     _preventDefault = true
   }
 
-  public mutating func cancelPropagation() {
-    _cancelPropagation = true
+  public mutating func stopPropagation() {
+    _stopPropagation = true
+  }
+
+  public mutating func stopImmediatePropagation() {
+    _stopImmediatePropagation = true
   }
 
   public static func new(ev: SDL_Event) -> SEvent {
     return SEvent(sdlEvent: ev, _preventDefault: false,
-        _cancelPropagation: false)
+        _stopPropagation: false, _stopImmediatePropagation: false)
   }
 
 }
@@ -83,6 +88,7 @@ public enum SEventType {
   case MouseButtonDown
   case MouseButtonUp
   case MouseWheel
+  case MouseClick         // Custom event.
 }
 
 
@@ -366,6 +372,8 @@ public class SImpl {
     mainDiv.expandWidth = true
     mainDiv.expandHeight = true
 
+    var lastMouseMouseDown = SDL_Event()
+
     try fn()
 // SDL_StartTextInput()
 // var textRect = SDL_Rect(x: 10, y: 10, w: 100, h: 30)
@@ -380,7 +388,9 @@ public class SImpl {
             }
           case MOUSEBUTTONDOWN:
             p("mouse button down \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
+            lastMouseMouseDown = ev
           case MOUSEBUTTONUP:
+            checkForClick(lastMouseMouseDown, mouseUpEv: ev)
             p("mouse button up \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
             p("mainDiv \(mainDiv.lastx) \(mainDiv.lasty) \(mainDiv.lastSize.width) \(mainDiv.lastSize.height)")
             if let cp = textGrid.pointToCell(ev.button.x, y: ev.button.y) {
@@ -425,6 +435,21 @@ public class SImpl {
       }
       // SDL_Delay(100)
       SDL_Delay(16)
+    }
+  }
+
+  let CLICK_RADIUS = 5
+  let CLICK_TIMESPAN = 150 // ms
+
+  func checkForClick(mouseDownEv: SDL_Event, mouseUpEv: SDL_Event) {
+    let d = mouseDownEv.button
+    let u = mouseUpEv.button
+    if (Int(u.timestamp) - Int(d.timestamp) <= CLICK_TIMESPAN) &&
+        u.clicks == 1 &&
+        (u.x >= d.x - CLICK_RADIUS) && (u.x <= d.x + CLICK_RADIUS) &&
+        (u.y >= d.y - CLICK_RADIUS) && (u.y <= d.y + CLICK_RADIUS) {
+      signal(.MouseClick, ev: mouseDownEv)
+      p("accepted the click", mouseDownEv.button)
     }
   }
 
