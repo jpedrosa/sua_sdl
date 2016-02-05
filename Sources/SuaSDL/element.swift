@@ -1,6 +1,5 @@
 
 import _Sua
-import CSDL
 
 
 public protocol Element {
