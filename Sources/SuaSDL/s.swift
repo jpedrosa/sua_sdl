@@ -164,6 +164,13 @@ public class EventStore {
     return nil
   }
 
+  public func hasListenerFor(eventType: SEventType) -> Bool {
+    if let a = customEvents[eventType] {
+      return !a.isEmpty
+    }
+    return false
+  }
+
 }
 
 

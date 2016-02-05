@@ -1,5 +1,6 @@
 
 import _Sua
+import CSDL
 
 
 public protocol Element {
@@ -24,7 +25,7 @@ public protocol Element {
   var lastx: Int { get set }
   var lasty: Int { get set }
   var lastSize: TellSize { get set }
-  var eventStore: EventStore? { get }
+  var eventStore: EventStore? { get set }
 
 
   func tellSize() -> TellSize
@@ -35,6 +36,13 @@ public protocol Element {
 
   func drawBackground(x: Int, y: Int, width: Int, height: Int,
       strings: [String])
+
+  mutating func on(eventType: SEventType, fn: SEventHandler) -> Int
+
+  func signal(eventType: SEventType, ev: SDL_Event) -> SEvent?
+
+  func hasListenerFor(eventType: SEventType) -> Bool
+
 }
 
 
@@ -219,6 +227,27 @@ extension Element {
       // Show border in red to indicate error.
       borderColor = Color.red
     }
+  }
+
+  public mutating func on(eventType: SEventType, fn: SEventHandler) -> Int {
+    if eventStore == nil {
+      eventStore = EventStore()
+    }
+    return eventStore!.on(eventType, fn: fn)
+  }
+
+  public func signal(eventType: SEventType, ev: SDL_Event) -> SEvent? {
+    if let es = eventStore {
+      return es.signal(eventType, ev: ev)
+    }
+    return nil
+  }
+
+  public func hasListenerFor(eventType: SEventType) -> Bool {
+    if let es = eventStore {
+      return es.hasListenerFor(eventType)
+    }
+    return false
   }
 
 }
