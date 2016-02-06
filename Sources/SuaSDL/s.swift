@@ -332,7 +332,6 @@ public class SImpl {
     let d = mouseDownEv.button
     let u = mouseUpEv.button
     if (Int(u.timestamp) - Int(d.timestamp) <= CLICK_TIMESPAN) &&
-        u.clicks == 1 &&
         (u.x >= d.x - CLICK_RADIUS) && (u.x <= d.x + CLICK_RADIUS) &&
         (u.y >= d.y - CLICK_RADIUS) && (u.y <= d.y + CLICK_RADIUS) {
       if let dc = textGrid.pointToCell(d.x, y: d.y) {
