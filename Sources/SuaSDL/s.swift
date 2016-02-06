@@ -360,11 +360,11 @@ public class SImpl {
 
   func dispatchCommonPointer(eventType: SEventType, x: Int32, y: Int32,
       ev: SDL_Event) {
+    var se = SEvent.new(ev)
     if let dc = textGrid.pointToCell(x, y: y) {
       var a = [Element]()
       if mainDiv.pointToList(dc.x, y: dc.y, list: &a) {
         var i = a.count - 1
-        var se = SEvent.new(ev)
         while i >= 0 {
           let e = a[i]
           if e.hasListenerFor(eventType) {
@@ -377,7 +377,12 @@ public class SImpl {
         }
       }
     }
-    signal(eventType, ev: ev)
+    if !se._stopPropagation {
+      signal(eventType, ev: &se)
+    }
+    if eventType == .MouseDown && !se._preventDefault {
+      focus(nil)
+    }
   }
 
   // Returns the id that can be used for removing the handler.
@@ -389,15 +394,19 @@ public class SImpl {
     return eventStore.signal(eventType, ev: ev)
   }
 
-  public func focus(e: FocusElement) {
-    if let o = _focusElement {
-      if o !== e {
-        o._onBlur(SEvent.new(SDL_Event()))
-        e._onFocus(SEvent.new(SDL_Event()))
+  public func signal(eventType: SEventType, inout ev: SEvent) {
+    return eventStore.signal(eventType, ev: &ev)
+  }
+
+  public func focus(e: FocusElement?) {
+    if e !== _focusElement {
+      if let ae = _focusElement {
+        ae._onBlur(SEvent.new(SDL_Event()))
       }
-    } else {
-      _focusElement = e
-      e._onFocus(SEvent.new(SDL_Event()))
+    }
+    _focusElement = e
+    if let ae = _focusElement {
+      ae._onFocus(SEvent.new(SDL_Event()))
     }
   }
 
