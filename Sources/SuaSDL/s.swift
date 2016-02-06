@@ -120,6 +120,7 @@ public class SImpl {
   public let KMOD_MODE:   UInt16 = 16384
 
   public var eventStore = EventStore()
+  public var _focusElement: FocusElement?
   public var _textGrid: TextGrid?
 
   public var textGrid: TextGrid {
@@ -386,6 +387,12 @@ public class SImpl {
 
   public func signal(eventType: SEventType, ev: SDL_Event) -> SEvent? {
     return eventStore.signal(eventType, ev: ev)
+  }
+
+  public func requestFocus(e: FocusElement) {
+    if let e = _focusElement {
+      e._onBlur(SEvent.new(SDL_Event()))
+    }
   }
 
   // x, y point, relative to the window with focus.

@@ -249,3 +249,31 @@ extension Element {
   }
 
 }
+
+
+public protocol FocusElement {
+
+  func _onKeyDown(ev: SEvent)
+
+  func _onKeyUp(ev: SEvent)
+
+  func _onTextInput(ev: SEvent)
+
+  func _onFocus(ev: SEvent)
+
+  func _onBlur(ev: SEvent)
+
+  func signal(eventType: SEventType, inout ev: SEvent)
+
+  func requestFocus()
+
+}
+
+
+extension FocusElement {
+
+  public func requestFocus() {
+    S.requestFocus(self)
+  }
+
+}
