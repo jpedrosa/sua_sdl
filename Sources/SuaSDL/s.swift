@@ -271,8 +271,12 @@ public class SImpl {
           case MOUSEBUTTONDOWN:
             p("mouse button down \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
             lastMouseMouseDown = ev
+            dispatchCommonPointer(.MouseButtonDown, x: ev.button.x,
+                y: ev.button.y, ev: ev)
           case MOUSEBUTTONUP:
-            checkForClick(lastMouseMouseDown, mouseUpEv: ev)
+            dispatchCommonPointer(.MouseButtonUp, x: ev.button.x,
+                y: ev.button.y, ev: ev)
+            maybeDispatchClick(lastMouseMouseDown, mouseUpEv: ev)
             p("mouse button up \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
             p("mainDiv \(mainDiv.lastx) \(mainDiv.lasty) \(mainDiv.lastSize.width) \(mainDiv.lastSize.height)")
             if let cp = textGrid.pointToCell(ev.button.x, y: ev.button.y) {
@@ -302,13 +306,12 @@ public class SImpl {
           case KEY_DOWN:
             signal(.KeyDown, ev: ev)
           case MOUSEMOTION:
-            signal(.MouseMotion, ev: ev)
-          case MOUSEBUTTONDOWN:
-            signal(.MouseButtonDown, ev: ev)
-          case MOUSEBUTTONUP:
-            signal(.MouseButtonUp, ev: ev)
+            dispatchCommonPointer(.MouseMotion, x: ev.button.x,
+                y: ev.button.y, ev: ev)
           case MOUSEWHEEL:
-            signal(.MouseWheel, ev: ev)
+            let wp = mousePosition
+            dispatchCommonPointer(.MouseWheel, x: Int32(wp.x),
+                y: Int32(wp.y), ev: ev)
           default: ()
         }
       }
@@ -323,7 +326,7 @@ public class SImpl {
   let CLICK_RADIUS = 5
   let CLICK_TIMESPAN = 150 // ms
 
-  func checkForClick(mouseDownEv: SDL_Event, mouseUpEv: SDL_Event) {
+  func maybeDispatchClick(mouseDownEv: SDL_Event, mouseUpEv: SDL_Event) {
     let d = mouseDownEv.button
     let u = mouseUpEv.button
     if (Int(u.timestamp) - Int(d.timestamp) <= CLICK_TIMESPAN) &&
@@ -333,12 +336,10 @@ public class SImpl {
       if let dc = textGrid.pointToCell(d.x, y: d.y) {
         var a = [Element]()
         if mainDiv.pointToList(dc.x, y: dc.y, list: &a) {
-          p("OOOOOKKKKK")
           if let uc = textGrid.pointToCell(u.x, y: u.y) {
             var i = a.count - 1
             var se = SEvent.new(mouseDownEv)
             while i >= 0 {
-              p("NOOOOOOT")
               let e = a[i]
               if e.matchPoint(uc.x, y: uc.y) && e.hasListenerFor(.MouseClick) {
                 e.signal(.MouseClick, ev: &se)
@@ -352,8 +353,29 @@ public class SImpl {
         }
       }
       signal(.MouseClick, ev: mouseDownEv)
-      // p("accepted the click", mouseDownEv.button)
     }
+  }
+
+  func dispatchCommonPointer(eventType: SEventType, x: Int32, y: Int32,
+      ev: SDL_Event) {
+    if let dc = textGrid.pointToCell(x, y: y) {
+      var a = [Element]()
+      if mainDiv.pointToList(dc.x, y: dc.y, list: &a) {
+        var i = a.count - 1
+        var se = SEvent.new(ev)
+        while i >= 0 {
+          let e = a[i]
+          if e.hasListenerFor(eventType) {
+            e.signal(eventType, ev: &se)
+            if se._stopPropagation {
+              break
+            }
+          }
+          i -= 1
+        }
+      }
+    }
+    signal(eventType, ev: ev)
   }
 
   // Returns the id that can be used for removing the handler.
@@ -363,6 +385,14 @@ public class SImpl {
 
   public func signal(eventType: SEventType, ev: SDL_Event) -> SEvent? {
     return eventStore.signal(eventType, ev: ev)
+  }
+
+  // x, y point, relative to the window with focus.
+  public var mousePosition: Point {
+    var x: Int32 = 0
+    var y: Int32 = 0
+    SDL_GetMouseState(&x, &y)
+    return Point(x: Int(x), y: Int(y))
   }
 
   var errorMessage: String {

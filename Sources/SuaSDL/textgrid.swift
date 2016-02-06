@@ -143,9 +143,6 @@ public class TextGrid {
   }
 
   public func pointToCell(x: Int32, y: Int32) -> CellPoint? {
-    p("pointToCell \(x) \(y)")
-    p(fontColor.toHexa())
-    p(fontColor)
     if x >= padding && x <= (cellWidth * Int32(width)) + padding &&
         y >= padding && y <= (cellHeight * Int32(height)) + padding {
       return CellPoint(x: Int((x - padding) / cellWidth),
