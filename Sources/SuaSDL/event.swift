@@ -71,8 +71,8 @@ public enum SEventType {
   case KeyUp
   case KeyDown
   case MouseMotion
-  case MouseButtonDown
-  case MouseButtonUp
+  case MouseDown
+  case MouseUp
   case MouseWheel
   case MouseClick         // Custom event.
   case Focus              // Custom event.

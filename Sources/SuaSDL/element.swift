@@ -251,7 +251,7 @@ extension Element {
 }
 
 
-public protocol FocusElement {
+public protocol FocusElement: class {
 
   func _onKeyDown(ev: SEvent)
 
@@ -265,15 +265,15 @@ public protocol FocusElement {
 
   func signal(eventType: SEventType, inout ev: SEvent)
 
-  func requestFocus()
+  func focus()
 
 }
 
 
 extension FocusElement {
 
-  public func requestFocus() {
-    S.requestFocus(self)
+  public func focus() {
+    S.focus(self)
   }
 
 }

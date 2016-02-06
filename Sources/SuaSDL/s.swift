@@ -272,10 +272,10 @@ public class SImpl {
           case MOUSEBUTTONDOWN:
             p("mouse button down \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
             lastMouseMouseDown = ev
-            dispatchCommonPointer(.MouseButtonDown, x: ev.button.x,
+            dispatchCommonPointer(.MouseDown, x: ev.button.x,
                 y: ev.button.y, ev: ev)
           case MOUSEBUTTONUP:
-            dispatchCommonPointer(.MouseButtonUp, x: ev.button.x,
+            dispatchCommonPointer(.MouseUp, x: ev.button.x,
                 y: ev.button.y, ev: ev)
             maybeDispatchClick(lastMouseMouseDown, mouseUpEv: ev)
             p("mouse button up \(ev.button.x) \(ev.button.y) \(ev.button.clicks)")
@@ -389,9 +389,15 @@ public class SImpl {
     return eventStore.signal(eventType, ev: ev)
   }
 
-  public func requestFocus(e: FocusElement) {
-    if let e = _focusElement {
-      e._onBlur(SEvent.new(SDL_Event()))
+  public func focus(e: FocusElement) {
+    if let o = _focusElement {
+      if o !== e {
+        o._onBlur(SEvent.new(SDL_Event()))
+        e._onFocus(SEvent.new(SDL_Event()))
+      }
+    } else {
+      _focusElement = e
+      e._onFocus(SEvent.new(SDL_Event()))
     }
   }
 
