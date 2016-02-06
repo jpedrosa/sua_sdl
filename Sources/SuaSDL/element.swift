@@ -2,7 +2,7 @@
 import _Sua
 
 
-public protocol Element {
+public protocol Element: class {
   var type: SType { get }
   var maxWidth: Int { get set }
   var maxHeight: Int { get set }
@@ -36,7 +36,7 @@ public protocol Element {
   func drawBackground(x: Int, y: Int, width: Int, height: Int,
       strings: [String])
 
-  mutating func on(eventType: SEventType, fn: SEventHandler) -> Int
+  func on(eventType: SEventType, fn: SEventHandler) -> Int
 
   func signal(eventType: SEventType, inout ev: SEvent)
 
@@ -228,7 +228,7 @@ extension Element {
     }
   }
 
-  public mutating func on(eventType: SEventType, fn: SEventHandler) -> Int {
+  public func on(eventType: SEventType, fn: SEventHandler) -> Int {
     if eventStore == nil {
       eventStore = EventStore()
     }
