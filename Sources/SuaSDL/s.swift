@@ -399,10 +399,11 @@ public class SImpl {
   }
 
   public func focus(e: FocusElement?) {
-    if e !== _focusElement {
-      if let ae = _focusElement {
-        ae._onBlur(SEvent.new(SDL_Event()))
-      }
+    if e === _focusElement {
+      return
+    }
+    if let ae = _focusElement {
+      ae._onBlur(SEvent.new(SDL_Event()))
     }
     _focusElement = e
     if let ae = _focusElement {
