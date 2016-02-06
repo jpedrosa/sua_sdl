@@ -261,7 +261,7 @@ public class SImpl {
 // var textRect = SDL_Rect(x: 10, y: 10, w: 100, h: 30)
 // SDL_SetTextInputRect(&textRect)
     while !done {
-      while SDL_PollEvent(&ev) != 0 {
+      POLL: while SDL_PollEvent(&ev) != 0 {
         invalidated = ev.type != MOUSEMOTION
         switch ev.type {
           case WINDOWEVENT:
@@ -297,10 +297,11 @@ public class SImpl {
             signal(.TextInput, ev: ev)
           case QUIT:
             if let se = signal(.Quit, ev: ev) {
-              if !se._preventDefault {
-                done = true
+              if se._preventDefault {
+                break POLL
               }
             }
+            done = true
           case KEY_UP:
             signal(.KeyUp, ev: ev)
           case KEY_DOWN:
