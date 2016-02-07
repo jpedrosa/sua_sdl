@@ -92,6 +92,21 @@ public class Text: Element {
     return t
   }
 
+  public func drawContent(x: Int, y: Int, w: Int, len: Int) {
+    S.textGrid.move(x, y: y)
+    if w == len {
+      S.textGrid.add(self._text)
+    } else {
+      let flen = min(w, len)
+      let z = String(self._text.characters.substring(0, endIndex: flen))
+      if self.align != .Left {
+        let n = self.commonAlign(self.align, availableWidth: w - flen)
+        S.textGrid.move(x + n, y: y)
+      }
+      S.textGrid.add(z)
+    }
+  }
+
   public func draw(x: Int, y: Int, size: TellSize) {
     lastx = x
     lasty = y
@@ -109,19 +124,7 @@ public class Text: Element {
       S.textGrid.withColor(color, backgroundColor: backgroundColor) {
         self.drawBackground(ap.x, y: ap.y, width: w, height: contentHeight,
             strings: self.backgroundStrings)
-        S.textGrid.move(ap.x, y: ap.y)
-        let len = size.count
-        if w == len {
-          S.textGrid.add(self._text)
-        } else {
-          let flen = min(w, len)
-          let z = String(self._text.characters.substring(0, endIndex: flen))
-          if self.align != .Left {
-            let n = self.commonAlign(self.align, availableWidth: w - flen)
-            S.textGrid.move(ap.x + n, y: ap.y)
-          }
-          S.textGrid.add(z)
-        }
+        drawContent(ap.x, y: ap.y, w: w, len: size.count)
       }
     }
   }

@@ -76,3 +76,36 @@ public class TextField: Span, FocusElement {
   }
 
 }
+
+
+public class TextScroller: Text {
+
+  public var offset = -1
+
+  public func step() {
+    offset -= 1
+    if text.characters.count + offset + lastSize.contentWidth <= 0 {
+      offset = -1
+    }
+  }
+
+  override public func drawContent(x: Int, y: Int, w: Int, len: Int) {
+    if offset < 0 {
+      var nx = x + w + offset
+      var si = 0
+      if nx < x {
+        si = x - nx
+        nx = x
+      }
+      if si <= len {
+        S.textGrid.move(nx, y: y)
+        var ei = -offset
+        if ei > len {
+          ei = len
+        }
+        S.textGrid.add(text.characters.substring(si, endIndex: ei))
+      }
+    }
+  }
+
+}
