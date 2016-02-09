@@ -38,6 +38,7 @@ public class Text: Element {
   public func tellSize() -> TellSize {
     var t = TellSize()
     t.element = self
+    t.text = _text
     t.count = _text.characters.count
     if width > 0 {
       t.width = width
@@ -92,15 +93,17 @@ public class Text: Element {
     return t
   }
 
-  public func drawContent(x: Int, y: Int, w: Int, len: Int) {
+  public func drawContent(x: Int, y: Int, size: TellSize) {
+    let w = size.contentWidth
+    let s = size.text
     S.textGrid.move(x, y: y)
-    if w == len {
-      S.textGrid.add(self._text)
+    if w == size.count {
+      S.textGrid.add(s)
     } else {
-      let flen = min(w, len)
-      let z = String(self._text.characters.substring(0, endIndex: flen))
-      if self.align != .Left {
-        let n = self.commonAlign(self.align, availableWidth: w - flen)
+      let flen = min(w, size.count)
+      let z = String(s.characters.substring(0, endIndex: flen))
+      if align != .Left {
+        let n = commonAlign(align, availableWidth: w - flen)
         S.textGrid.move(x + n, y: y)
       }
       S.textGrid.add(z)
@@ -124,7 +127,7 @@ public class Text: Element {
       S.textGrid.withColor(color, backgroundColor: backgroundColor) {
         self.drawBackground(ap.x, y: ap.y, width: w, height: contentHeight,
             strings: self.backgroundStrings)
-        drawContent(ap.x, y: ap.y, w: w, len: size.count)
+        drawContent(ap.x, y: ap.y, size: size)
       }
     }
   }

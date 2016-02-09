@@ -89,12 +89,16 @@ public class TextScroller: Text {
     }
   }
 
-  public func drawOffsetText(x: Int, y: Int, startIndex: Int, endIndex: Int) {
+  public func drawOffsetText(x: Int, y: Int, startIndex: Int, endIndex: Int,
+      size: TellSize) {
     S.textGrid.move(x, y: y)
-    S.textGrid.add(text.characters.substring(startIndex, endIndex: endIndex))
+    let s = size.text.characters.substring(startIndex, endIndex: endIndex)
+    S.textGrid.add(s)
   }
 
-  override public func drawContent(x: Int, y: Int, w: Int, len: Int) {
+  override public func drawContent(x: Int, y: Int, size: TellSize) {
+    let w = size.contentWidth
+    let len = size.count
     if offset < 0 {
       var nx = x + w + offset
       var si = 0
@@ -107,7 +111,7 @@ public class TextScroller: Text {
         if ei > len {
           ei = len
         }
-        drawOffsetText(nx, y: y, startIndex: si, endIndex: ei)
+        drawOffsetText(nx, y: y, startIndex: si, endIndex: ei, size: size)
       }
     }
   }

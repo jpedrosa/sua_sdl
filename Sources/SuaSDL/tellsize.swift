@@ -38,7 +38,8 @@ public struct TellSize {
   public var element: Element?
   public var children: [TellSize]?
 
-  public var count = 0                 // Useful to record NCText's char count.
+  public var text = ""                 // Useful to record Text's drawing.
+  public var count = 0                 // Useful to record Text's char count.
   public var borderTop = 0       // Store these for the drawing command.
   public var borderRight = 0
   public var borderBottom = 0
