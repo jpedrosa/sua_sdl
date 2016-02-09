@@ -38,7 +38,6 @@ public class Text: Element {
   public func tellSize() -> TellSize {
     var t = TellSize()
     t.element = self
-    t.text = _text
     t.count = _text.characters.count
     if width > 0 {
       t.width = width
@@ -95,7 +94,7 @@ public class Text: Element {
 
   public func drawContent(x: Int, y: Int, size: TellSize) {
     let w = size.contentWidth
-    let s = size.text
+    let s = text
     S.textGrid.move(x, y: y)
     if w == size.count {
       S.textGrid.add(s)

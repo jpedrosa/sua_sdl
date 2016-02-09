@@ -92,7 +92,7 @@ public class TextScroller: Text {
   public func drawOffsetText(x: Int, y: Int, startIndex: Int, endIndex: Int,
       size: TellSize) {
     S.textGrid.move(x, y: y)
-    let s = size.text.characters.substring(startIndex, endIndex: endIndex)
+    let s = text.characters.substring(startIndex, endIndex: endIndex)
     S.textGrid.add(s)
   }
 
